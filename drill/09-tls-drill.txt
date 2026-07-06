@@ -1,0 +1,52 @@
+DRILL 09 — TLS/SSL: Identity, Not Just Encryption
+Topic: TLS/SSL
+Repeat daily until instant.
+
+--- THE GAP THIS CLOSES ---
+TCP's three-way handshake (SYN/SYN-ACK/ACK) proves a connection can reliably deliver bytes
+between two addresses. It proves NOTHING about identity — anyone can stand up a server and
+complete a handshake perfectly while claiming to be anyone. Proven earlier (Topic 4): a raw
+`nc` process completes a real TCP handshake while having no idea what protocol it's even
+supposed to speak. TLS exists specifically to prove identity BEFORE trusting a connection
+with sensitive data — encryption is a secondary benefit, identity verification is the core job.
+
+--- THE PASSPORT ANALOGY ---
+A passport is trustworthy because a recognized government (a trusted authority) verified
+the holder's identity and issued it. A website's certificate works the same way: a
+Certificate Authority (CA) verifies whoever controls a domain, then signs a certificate
+proving it. Your OS/browser ships with a built-in list of CAs it already trusts — the
+equivalent of a border agent trusting a known list of legitimate passport-issuing countries.
+
+--- READ A REAL CERTIFICATE ---
+echo | openssl s_client -connect <domain>:443 -servername <domain> 2>/dev/null | openssl x509 -noout -subject -issuer -dates
+
+Look at three things:
+subject    = the identity being claimed ("I am this domain")
+issuer     = WHO vouched for that claim (a real CA, ideally different from the subject)
+dates      = notBefore/notAfter, the certificate's valid window (like a passport's expiry)
+
+--- THE DETECTION RULE ---
+subject == issuer   ->  self-signed, no trusted third party, SUSPICIOUS
+subject != issuer    ->  a real, independent authority vouched for this identity
+This is the literal, visible difference your browser checks automatically on every HTTPS
+connection — it's why fake/impersonating sites trigger hard browser warnings.
+
+--- BREAK: GENERATE A FAKE CERTIFICATE (the attacker's only option without a real CA) ---
+openssl req -x509 -newkey rsa:2048 -keyout ~/fake-key.pem -out ~/fake-cert.pem -days 365 -nodes -subj "/CN=fakebank.com"
+openssl x509 -in ~/fake-cert.pem -noout -subject -issuer
+# subject and issuer will be IDENTICAL — proof of self-signing, no real authority involved
+
+--- FIX: THIS ISN'T A "FIX" — IT'S RECOGNITION ---
+You can't fix someone else's fake certificate. The actual skill is recognizing the tell
+(subject == issuer, or an issuer not on any trusted list) and refusing to trust it —
+exactly what TLS verification is designed to do automatically for you.
+
+--- PRODUCTION SCENARIO ---
+A user reports their browser threw a certificate warning connecting to an internal company
+site. Before dismissing it as "probably fine":
+1. Pull the actual certificate: openssl s_client + openssl x509 -noout -subject -issuer -dates
+2. Check: does subject match the expected domain exactly?
+3. Check: is the issuer a real, recognized CA, or self-signed (subject == issuer)?
+4. Check: has it expired (notAfter already passed)?
+A self-signed or expired cert on a site that should have a real one is a genuine red flag —
+not something to click through without understanding why the warning fired.

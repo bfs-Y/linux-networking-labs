@@ -1,0 +1,37 @@
+DRILL 04 — Ports, Sockets, and Rogue Process Hunting
+Topic: Ports and Sockets
+Repeat daily until instant.
+
+--- READ ---
+sudo ss -tulnp                # all listening sockets, TCP+UDP, with owning process
+sudo ss -tulnp | grep <port>  # check one specific port
+
+--- WHAT TO LOOK FOR ---
+0.0.0.0:PORT       = bound to every interface, reachable from outside the machine
+127.0.0.1:PORT     = bound to loopback only, not reachable externally
+Multiple PIDs, same port  = worker pool architecture (e.g. nginx master+workers)
+Unknown process on unexpected port = potential rogue listener, investigate before killing
+
+--- DIAGNOSIS: THREE CURL OUTCOMES ---
+Connection refused        = kernel confirms nothing is listening on that port
+Connection timed out       = something or someone is silently dropping the packet, OR something is listening but never replying (e.g. raw nc holding the connection open)
+Connected then timeout on response = port has a listener, but it doesn't speak the protocol you're using (e.g. HTTP request to a raw nc listener)
+
+--- BREAK ---
+nc -lk 8080 &
+disown
+sudo ss -tulnp | grep 8080         # confirm rogue listener exists
+curl -v --max-time 3 http://localhost:8080   # observe connect-then-timeout behavior
+
+--- FIX ---
+sudo ss -tulnp | grep 8080         # find the PID
+ps -fp <PID>                       # verify what the process actually is before touching it
+kill <PID>                         # SIGTERM first, polite shutdown
+sudo ss -tulnp | grep 8080         # confirm port is clear — empty output = success
+
+--- PRODUCTION SCENARIO ---
+Security audit finds an unexpected process bound to a port that shouldn't be open.
+Step 1: sudo ss -tulnp — find the exact line, note the PID and bind address
+Step 2: ps -fp <PID> — check owner, parent PID, full command
+Step 3: if parent PID is 1 (orphaned/reparented to init) or owner is unexpected — treat as suspicious, escalate before killing
+Step 4: if confirmed safe, kill cleanly and verify the port is closed afterward

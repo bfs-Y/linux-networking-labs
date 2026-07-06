@@ -1,0 +1,40 @@
+DRILL 2b — TCP vs UDP: The Real Tradeoff
+Topic: TCP/IP fundamentals
+Repeat until the reasoning is automatic, not just the packet counts.
+
+--- THE CORE TRADEOFF ---
+TCP guarantees ORDERED, COMPLETE delivery. If one piece is lost, TCP will not deliver
+anything AFTER it until the missing piece is resent and confirmed — everything queues
+and waits, no exceptions. This is the literal definition of "reliable."
+
+UDP guarantees NOTHING. No resend, no ordering guarantee, no waiting. Whatever arrives,
+arrives, in whatever order, and the application just keeps moving forward.
+
+--- WHY THIS MATTERS: TWO REAL CASES ---
+Live video call, one frame lost: TCP would FREEZE playback waiting for that one piece,
+even though newer data already arrived and is sitting unusable behind it. UDP just skips
+it — a barely-visible glitch, then moves on. For live media, a freeze is worse than a
+glitch, so UDP wins.
+
+SSH command, one packet lost: if a fragment of `rm -rf /tmp/old` were silently dropped
+and never resent (as UDP would allow), the remote shell could execute a corrupted,
+different, potentially destructive command. Correctness is non-negotiable here — a
+half-second stall is a minor cost compared to running the wrong command. TCP wins.
+
+Same underlying tradeoff (completeness vs speed), opposite conclusion, because the cost
+of being wrong is completely different in each case. This reasoning generalizes to ANY
+protocol choice, not just these two examples.
+
+--- PROVE IT ON THE WIRE ---
+sudo tcpdump -i enp1s0 -n udp port 53          # then run: dig google.com
+sudo tcpdump -i enp1s0 -n tcp port 80           # then run: curl http://example.com
+
+UDP shape: question packet, answer packet. TWO packets. No handshake. No confirmation.
+TCP shape: SYN, SYN-ACK, ACK (3 just to start), then request, ack, response, ack(s), FIN.
+TEN+ packets for the same single request/response. That gap IS the cost of reliability,
+counted, not asserted.
+
+--- PRODUCTION RELEVANCE ---
+When choosing a protocol for a new system, ask: what's worse here — a brief stall while
+data is confirmed, or silently losing/corrupting data to stay fast? That answer tells you
+TCP or UDP, not a memorized rule about "video uses UDP."

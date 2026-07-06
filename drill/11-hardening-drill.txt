@@ -1,0 +1,55 @@
+DRILL 11 — Hardening: Three-Layer Defense (Module Closer)
+Topic: Hardening
+This drill ties together every prior topic in Module 16. Repeat on every new server.
+
+--- THE THREE-LAYER PRIORITY ORDER, REASONED FROM EVIDENCE ---
+
+LAYER 1 — SSH (the literal front door):
+This is priority one because it's the literal mechanism for getting a shell on the
+machine. Everything else matters less if an attacker can just log in directly.
+Check: sudo sshd -T | grep -iE "permitrootlogin|passwordauthentication|maxauthtries|x11forwarding"
+Required: permitrootlogin no | passwordauthentication no | maxauthtries low (e.g. 3) |
+x11forwarding no (prevents remote GUI app exposure beyond just terminal access)
+Proven hands-on: MaxAuthTries 3 genuinely locks out a connection after 3 failed
+attempts (Topic 7) — this is real, working defense, not theoretical.
+
+LAYER 2 — FIREWALL (controls what can even reach a service):
+Once SSH itself is locked, the next layer is restricting which traffic can even
+attempt to reach it, or anything else.
+Check: sudo ufw status verbose
+Required: Default deny (incoming). Sensitive ports (SSH) scoped to a trusted range,
+NOT "Anywhere"/0.0.0.0/0 (Topic 6 — the entire audit scenario: SSH open to the whole
+internet vs scoped to a known subnet).
+
+LAYER 3 — PRIVILEGE/ROOT LIMITING (damage control if someone still gets in):
+Even with layers 1-2 solid, assume something could still get through. This layer
+limits how much damage a foothold can do.
+Check: getent group sudo                    (who can become root at all?)
+Check: sudo passwd -S root                   (can anyone log in AS root directly?)
+Required: minimal, known users in sudo group. Root status shows L (Locked) — no
+direct root login possible by any path, only through sudo as an audited user.
+An attacker adding themselves to the sudo group is a classic persistence technique —
+this check is how you'd catch it.
+
+--- WHY THIS ORDER, NOT A RANDOM CHECKLIST ---
+Each layer is reasoned from a specific failure you proved yourself this module:
+- Topic 4 (rogue port) proved unauthorized access doesn't need root — just an open
+  door (a listening service nobody scoped).
+- Topic 6 (firewall) proved scope, not just existence of a firewall, is what matters.
+- Topic 7 (banner grabbing) proved leaked SSH version info gives attackers a free
+  target list — hardening isn't just "turn things off," it's knowing what's still
+  unavoidably exposed (the SSH version string itself) and compensating elsewhere.
+- Topic 9 (TLS) and Topic 10 (network attacks) proved identity verification and
+  encryption-start timing are both exploitable in different ways — hardening a
+  server doesn't fix client-side risks like Evil Twin or SSL stripping; those
+  require user vigilance and HSTS on top of server-side hardening.
+
+--- PRODUCTION SCENARIO ---
+You're handed a fresh server with the instruction "harden it before go-live."
+Run the three-layer audit script, in order:
+1. SSH — close the front door first
+2. Firewall — restrict what can even knock
+3. Privilege/root — ensure a foothold can't trivially become full control
+Don't treat hardening as a checklist to complete once — re-audit periodically,
+since configuration drift (a forgotten rule, a new user added to sudo) is itself
+a real risk over time.

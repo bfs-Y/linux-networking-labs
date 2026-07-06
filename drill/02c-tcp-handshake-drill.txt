@@ -1,0 +1,59 @@
+DRILL 2c — TCP Handshake Mechanics & Failure Diagnosis
+Topic: TCP/IP fundamentals (extends 02b)
+Repeat until flag recognition and seq/ack math are automatic.
+
+==============================
+QUESTIONS
+==============================
+
+1. What are the three packets in a TCP handshake and their flags?
+2. Why does ack = seq + 1 after a SYN?
+3. What does PUSH [P.] mean and when does it appear?
+4. What's the difference between FIN and RST?
+5. How do you isolate a local vs remote network failure?
+6. What does [S.] mean — which two flags combined?
+7. Why does the handshake never show a PUSH flag?
+
+==============================
+ANSWERS
+==============================
+
+1. SYN [S] -> SYN-ACK [S.] -> ACK [.]
+2. SYN consumes one sequence number even though it carries no data.
+   ack = "next byte expected" = seq + 1
+3. PUSH = deliver to application immediately, don't buffer.
+   Appears on packets carrying real data (GET request, HTTP response).
+   Never in the handshake — no application data exists yet.
+4. FIN = graceful close, both sides finish exchanging data first.
+   RST = immediate abort — closed port, crashed app, or firewall block.
+5. Test a known-working destination on the same path/protocol first.
+   If known-good works but target fails -> fault is at/near the target.
+6. SYN + ACK combined into one packet.
+7. Handshake carries zero application data — nothing to push yet,
+   connection isn't even established.
+
+==============================
+REAL CASE STUDY
+==============================
+
+Captured a failed handshake to neverssl.com (34.223.124.45):
+- Only SYN packets, retransmitted 7+ times with exponential backoff
+- No SYN-ACK ever returned
+
+Diagnosis:
+1. Tested example.com — worked over HTTP and HTTPS, ruling out local
+   machine, VM stack, gateway, ISP, DNS
+2. Traceroute to 34.223.124.45 reached real backbone hops, then died
+   with "* * *" near the destination
+3. Conclusion: fault isolated to the destination server/firewall, not us
+
+Lesson: one target fails, another succeeds, same conditions otherwise —
+the difference between them is the answer.
+
+==============================
+RUN THE SCRIPTS
+==============================
+
+break/02c-tcp-handshake-capture.sh       — capture and decode a live handshake
+fix/02c-tcp-handshake-diagnose.sh <host>  — diagnose a failing connection
+  example: fix/02c-tcp-handshake-diagnose.sh neverssl.com

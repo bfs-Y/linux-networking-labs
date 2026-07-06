@@ -1,0 +1,56 @@
+DRILL 08 — Load Balancing and Reverse Proxying with nginx
+Topic: Load Balancing and Proxying
+Repeat daily until instant.
+
+--- CONCEPT ---
+A reverse proxy sits between clients and backend servers, relaying traffic on the server's
+behalf. A load balancer is a reverse proxy that distributes requests across MULTIPLE
+backends using a strategy (default in nginx: round robin). One address out front, many
+independent servers behind it, client never knows or cares which one actually answered.
+
+--- NOT THE SAME AS WORKER PROCESSES ---
+nginx master+workers share ONE socket because they're the same process listening once.
+Load balancing is different: multiple SEPARATE, independent servers/processes (possibly on
+different machines, different IPs), with a proxy in front deciding which one gets each request.
+
+--- CONFIG SHAPE ---
+upstream backend_pool {
+    server <ip>:<port>;
+    server <ip>:<port>;
+}
+server {
+    listen <port>;
+    location / {
+        proxy_pass http://backend_pool\;
+    }
+}
+
+--- READ / VERIFY ---
+sudo nginx -t                                    # ALWAYS test config before reload, never skip
+sudo ss -tulnp | grep <backend-port>              # confirm backends are actually listening
+for i in 1 2 3 4 5; do curl http://localhost:\<lb-port\>\; done   # watch distribution across backends
+
+--- CRITICAL LESSON: 502 BAD GATEWAY ---
+502 means the PROXY is alive and working, but the BACKEND it tried to reach refused or failed.
+Always check backend health FIRST when you see 502 — don't assume the proxy config is wrong.
+
+--- CRITICAL LESSON: SILENT CONFIG FAILURES ---
+A broken symlink (typo in filename) doesn't always fail loudly the moment you create it.
+It can sit dormant until something later triggers a config re-check (reload, restart, timer) —
+at which point the ENTIRE service can go down, possibly hours later, with no immediate symptom
+at the time the mistake was made. Always run `nginx -t` immediately after any config/symlink
+change, never assume "no error now" means "no error ever."
+
+--- BREAK / SETUP ---
+Run break/08-loadbalancer-setup.sh — stands up two backends + nginx load balancer
+
+--- FIX / VERIFY ---
+Run fix/08-loadbalancer-verify.sh — checks backend health, checks nginx is running,
+tests actual distribution across both backends
+
+--- PRODUCTION SCENARIO ---
+Load balancer returns 502 for all requests.
+Step 1: ss -tulnp on each backend port — are they actually listening?
+Step 2: systemctl status on the proxy itself — is IT actually running?
+Step 3: nginx -t — is the current config even valid?
+Step 4: only after confirming proxy + config are healthy, suspect backend application logic

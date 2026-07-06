@@ -1,0 +1,137 @@
+DRILL 06 — Traffic Analysis with tcpdump
+Topic: Traffic Analysis
+Repeat daily until instant.
+
+--- READ ---
+sudo tcpdump -i enp1s0 -n              # all traffic, no DNS resolution, raw and unfiltered
+sudo tcpdump -i enp1s0 -n icmp         # filter to just ICMP (ping) traffic
+sudo tcpdump -i enp1s0 -n tcp port 22  # filter to just SSH traffic
+
+--- WHAT TO LOOK FOR ---
+ICMP echo request / echo reply pairs        = ping working end to end
+echo request with NO matching echo reply    = packet sent, never answered — proof something dropped it
+SYN with no SYN-ACK                          = TCP equivalent — connection attempt, no response
+seq numbers                                  = match each request to its specific reply, pinpoint exactly which packets vanished
+
+--- KEY PRINCIPLE ---
+tcpdump never lies about what crossed YOUR interface. Application logs can be wrong, missing,
+or misleading — tcpdump shows the literal wire truth, no interpretation.
+
+--- LIMITATION TO REMEMBER ---
+A capture on YOUR machine alone proves what left your interface. It does NOT prove what
+happened after — could be dropped by your own firewall, a router in between, or the
+destination's firewall. To prove exactly where a packet died, you need captures on BOTH ends.
+
+--- BREAK ---
+sudo iptables -I OUTPUT -d 8.8.8.8 -p icmp -j DROP   # silently drop outbound ICMP
+ping -c 2 8.8.8.8                                      # 100% packet loss
+sudo tcpdump -i enp1s0 -n icmp                         # confirm: requests leave, no replies ever appear
+
+--- FIX ---
+sudo iptables -D OUTPUT -d 8.8.8.8 -p icmp -j DROP
+ping -c 2 8.8.8.8                                      # confirm replies return
+
+--- PRODUCTION SCENARIO ---
+Two teams disagree: sender's app logs claim success, receiver claims nothing arrived.
+Step 1: tcpdump on the sending machine during the exact request
+Step 2: look for the equivalent of SYN/echo-request leaving
+Step 3: look for SYN-ACK/echo-reply coming back
+Step 4: state precisely what the evidence shows — "request left, no reply returned" —
+        do NOT overclaim "it never reached them," only claim what you can prove from your side
+Step 5: if you need to prove exactly where it died, you need a capture on the receiving end too
+
+--- BANNER GRABBING: WHAT A SERVICE VOLUNTEERS BEFORE ANY LOGIN ---
+
+CONCEPT:
+A banner is information a service announces unprompted, the instant a connection opens,
+before any authentication or real interaction. Pure reconnaissance for an attacker — zero
+exploitation needed, the service hands it over for free.
+
+GRAB AN SSH BANNER:
+echo "" | nc -w 2 localhost 22
+Reveals: exact SSH implementation, version, and (on Ubuntu) the distro patch suffix.
+Why it matters: a published vulnerability for a specific version gives attackers a
+pre-built target list just by scanning for this exact string.
+
+GRAB AN HTTP/nginx BANNER:
+curl -I http://localhost
+Look at the "Server:" header. Default nginx reveals full version + OS in this header.
+
+MITIGATION — nginx (config-controllable):
+server_tokens off;   in /etc/nginx/nginx.conf
+Removes version number from the Server header. Verify with: curl -I, check Server: line.
+Always back up config first, test with `nginx -t`, then reload — never edit blind.
+
+MITIGATION — SSH (PARTIALLY controllable, honest limitation):
+VersionAddendum none   in /etc/ssh/sshd_config
+This does NOT remove the core "SSH-2.0-OpenSSH_X.X" string — that's part of the protocol
+itself. On Ubuntu specifically, it also does NOT remove the distro suffix
+(e.g. "Ubuntu-3ubuntu13.16") — that's compiled into the binary at package build time,
+not something sshd_config can reach. Verified directly: even with VersionAddendum
+correctly set and confirmed active via `sudo sshd -T`, the banner is unchanged.
+
+REAL LESSON: not everything a service leaks is fixable from its config file. Some
+information is baked in at compile time. The professional response isn't "configure it
+away" when that's not possible — it's knowing the limitation exists and compensating
+elsewhere: stay patched, scope access tightly with firewall rules (Topic 6), don't expose
+SSH to the internet unnecessarily. A banner you can't hide is mitigated by reducing who
+can reach it and ensuring the version itself has no known exploitable vulnerabilities.
+
+VERIFY CURRENT LIVE CONFIG (not just the file on disk):
+sudo sshd -T | grep -i versionaddendum
+This shows what's actually loaded and active right now, not what the file claims.
+
+--- SAVING CAPTURES TO DISK (pcap) AND READING THEM BACK ---
+
+WHY IT MATTERS:
+Live tcpdump output is gone the moment it scrolls past. Real investigations happen AFTER
+an incident — you need traffic SAVED to disk so you can read it as many times as needed,
+the same way a security camera needs to record, not just display a live feed.
+
+SAVE A CAPTURE:
+sudo tcpdump -i <interface> -n tcp port <port> -w ~/capture.pcap &
+disown
+sleep 2                              # confirm it's actually running before triggering traffic
+ls -lh ~/capture.pcap                # should be non-zero / growing once traffic occurs
+sudo pkill tcpdump                   # stop the capture when done
+
+READ A SAVED CAPTURE BACK:
+sudo tcpdump -r ~/capture.pcap -n              # read entire file
+sudo tcpdump -r ~/capture.pcap -n -c 15         # read just the first N packets, reliably
+                                                  # (piping to `head` can throw "Broken pipe" —
+                                                  # harmless, but use -c instead for clean output)
+
+--- REAL GOTCHA: SELF-DIRECTED TRAFFIC USES LOOPBACK, NOT THE PHYSICAL INTERFACE ---
+SSH'ing to your OWN machine's own IP (e.g. ssh user@<this-machine's-own-ip>) does NOT
+necessarily travel through enp1s0. It can resolve entirely through `lo`, the loopback
+interface, never touching the physical NIC at all — even though you typed a "real" IP,
+not 127.0.0.1. Verified directly: capturing on enp1s0 caught ZERO packets for a self-
+directed SSH session; capturing the identical traffic on `lo` caught everything.
+LESSON: when traffic seems to "disappear," check whether you're watching the right
+interface — self-traffic and loopback-routed traffic are easy to miss if you assume
+the physical interface sees everything.
+
+--- REAL GOTCHA: ONE PCAP FILE CAN CONTAIN MULTIPLE UNRELATED SESSIONS ---
+A continuously running capture doesn't separate connections for you — multiple SSH
+attempts (including failed ones) can all land in the same file, distinguishable only
+by timestamp and by tracking SYN/FIN boundaries per conversation. Don't assume "the
+traffic in this file" means one clean session — check timestamps and connection
+boundaries before drawing conclusions from a shared capture file.
+
+--- REAL GOTCHA: CAPTURE TIMING CAN MISS THE TRUE START OF A CONNECTION ---
+If a connection's handshake (SYN/SYN-ACK/ACK) completes in the brief window before or
+exactly as tcpdump starts, you can genuinely miss it — even with a deliberate delay
+before triggering traffic. The first packet you see might already be mid-handshake or
+mid-session. LESSON for real investigations: monitoring that starts even slightly late
+can permanently lose the chance to see how a connection began. Continuous, always-on
+capture (not just "start it when I think something's about to happen") is the only way
+to guarantee you see a connection's true beginning.
+
+--- WHAT ENCRYPTED SSH TRAFFIC LOOKS LIKE ON THE WIRE ---
+After the initial handshake, SSH traffic is uniform-looking, small (often ~36 bytes),
+rapid-fire packets in both directions — this is the encrypted keystroke-by-keystroke
+rhythm of an interactive session. No readable usernames, passwords, or commands are
+visible — that's the actual security boundary SSH provides, visible by its absence in
+the capture. A larger packet near the very start (e.g. ~124 bytes) is typically the
+key exchange/encryption negotiation, before the connection settles into small uniform
+packets.
