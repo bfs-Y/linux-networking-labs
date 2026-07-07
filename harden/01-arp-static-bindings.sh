@@ -15,5 +15,6 @@ sudo ip neigh replace "$GATEWAY_IP" lladdr "$GATEWAY_MAC" nud permanent dev enp1
 
 echo "[VERIFY] Static binding installed:"
 ip neigh show "$GATEWAY_IP"
-echo "[NOTE] This entry will NOT be overwritten by a poisoned ARP reply."
+echo "[NOTE] This entry resists standard ARP poisoning replies from other hosts on the network."
+echo "[NOTE] Limitation: does NOT protect against a local privileged process directly overwriting the entry (ip neigh replace as root)."
 echo "[NOTE] Limitation: static entries don't scale — this hardens ONE critical host (gateway), not the whole subnet."
