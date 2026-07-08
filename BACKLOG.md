@@ -17,3 +17,8 @@ Baseline `ip neigh` capture also needed.
 phase1-layer1-2/arp/ is currently empty. Need: normal resolution walkthrough,
 stale cache entry scenario, cache table exhaustion — no adversary, pure mechanism.
 Baseline `ip neigh` capture also needed.
+
+## ARP mechanism content (not yet written)
+phase1-layer1-2/arp/ is currently empty. Need: normal resolution walkthrough,
+stale cache entry scenario, cache table exhaustion — no adversary, pure mechanism.
+Baseline `ip neigh` capture also needed.
