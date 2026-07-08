@@ -1,24 +1,31 @@
 # linux-networking-labs
 
-Protocol-deep networking labs — TCP/IP, DNS, NAT, ARP, container networking, load balancing, TLS, and packet-level attack/defense scenarios. Companion repo to `linux-break-fix-harden`, which covers general Linux administration; this repo goes deep on networking mechanisms specifically.
+Protocol-deep networking labs — how packets actually move, and how to
+troubleshoot connectivity. Companion repos:
+- `linux-break-fix-harden` — general Linux administration
+- `linux-security-labs` — attack/defense/detection content (ARP poisoning,
+  firewall exploitation, TLS spoofing, and other adversarial scenarios that
+  used to live here)
 
-Each topic is a self-contained module:
-## Topics
+This repo is scoped to mechanism only — no adversary involved. If a script
+assumes an attacker, it belongs in `linux-security-labs`, not here.
 
-- `arp/` — ARP poisoning, static bindings, arptables rate-limiting, ARP change monitoring
-- `nat/` — NAT/MASQUERADE break, fix, and verification
-- `tcp-udp/` — TCP handshake capture and diagnosis, TCP vs UDP behavior
-- `rogue-port/` — detecting and killing unexpected listening services
-- `container-namespace/` — container network namespace break/fix
-- `loadbalancer/` — load balancer setup and verification
-- `tls/` — fake certificate detection and inspection
-- `cleartext-capture/` — cleartext traffic capture and attack chain recognition
+## Structure
+
+Organized by learning phase, not flat topic folders:
+## Phases
+
+- `phase0-infra/` — KVM provisioning, cloud-init, topology, baseline capture (not yet built)
+- `phase1-layer1-2/` — interfaces, ARP mechanism (not yet built), bridging/VLANs, container namespaces
+- `phase2-layer3/` — IP addressing, routing, NAT, ICMP
+- `phase3-transport/` — TCP/UDP connection states, load balancing
+- `phase4-dns/` — DNS resolution (in progress)
+- `phase5-observability/` — tcpdump/Wireshark, nmap, log analysis (not yet built)
+- `phase6-capstone/` — multi-fault incidents, networking-focused CTF (not yet built)
+
+See `BACKLOG.md` for what's tracked but not yet built.
 
 ## Environment
 
-All labs run inside a KVM training VM (Ubuntu 24.04, `192.168.122.227`), not the KVM host. Break/fix scripts assume this environment.
-
-## Notes
-
-Known gaps, tracked deliberately, not hidden:
-- `tcp-udp/break/02b-tcp-vs-udp.sh` has no corresponding fix script (conceptual break, not a real fault to remediate — under review).
+All labs run inside a KVM training VM (Ubuntu 24.04, `192.168.122.227`), not
+the KVM host. Break/fix scripts assume this environment.
