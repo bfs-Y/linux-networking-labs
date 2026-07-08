@@ -7,3 +7,8 @@
 - nftables (deep — NAT rules, port forwarding, conntrack)
 - VPN (WireGuard or OpenVPN, tunnel troubleshooting)
 - Latency/throughput (iperf3, path analysis)
+
+## ARP mechanism content (not yet written)
+phase1-layer1-2/arp/ is currently empty. Need: normal resolution walkthrough,
+stale cache entry scenario, cache table exhaustion — no adversary, pure mechanism.
+Baseline `ip neigh` capture also needed.
