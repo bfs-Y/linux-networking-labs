@@ -28,3 +28,9 @@ pre-lab-module4-20260603 -> pre-lab-module5-20260604, current). Allocation
 (55GB) exceeds Capacity (30GB) as a result. Decide which snapshots are still
 needed as rollback points before pruning; understand virsh snapshot-delete /
 blockcommit before acting.
+
+## Phase 0 — remaining work (not done)
+- Test rebuild-training-vm.sh against a throwaway VM, confirm it actually works
+- Capture and commit a baseline: ip a, ip route, ip neigh, ss -tulpn, iptables -L -v, a clean tcpdump sample
+- Understand what the "isolated" network (virbr1) was originally for
+- Decide on snapshot chain pruning (see prior entry)
