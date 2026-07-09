@@ -34,3 +34,9 @@ blockcommit before acting.
 - Capture and commit a baseline: ip a, ip route, ip neigh, ss -tulpn, iptables -L -v, a clean tcpdump sample
 - Understand what the "isolated" network (virbr1) was originally for
 - Decide on snapshot chain pruning (see prior entry)
+
+## Phase 1 — Layer 1/2, DHCP mechanism gap
+Confirmed: default network (virbr0) runs DHCP, isolated network (virbr1)
+does not — explains why enp1s0 gets an IPv4 address automatically and
+enp7s0 only gets IPv6 link-local. Need a lab demonstrating DHCP lease
+process directly (not yet built).
