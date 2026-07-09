@@ -21,3 +21,10 @@ Training VM has a second NIC on an "isolated" libvirt network (no IP/DHCP
 configured) — purpose unknown, not currently used. Investigate when Phase 0
 is actually reached: what was it for, is it worth configuring, or should it
 be removed from the VM definition.
+
+## Phase 0 — Disk allocation exceeds capacity (snapshot chain buildup)
+training-vm has a linear snapshot chain (snap1 -> clean-baseline-20260418 ->
+pre-lab-module4-20260603 -> pre-lab-module5-20260604, current). Allocation
+(55GB) exceeds Capacity (30GB) as a result. Decide which snapshots are still
+needed as rollback points before pruning; understand virsh snapshot-delete /
+blockcommit before acting.
