@@ -1,6 +1,8 @@
 #!/bin/bash
-# Draft virt-install command to reproduce training-vm from scratch.
-# NOT YET TESTED — verify against a differently-named test VM first.
+# virt-install command to reproduce a training VM equivalent to training-vm.
+# Dry-run validated (syntax/parameters confirmed correct against libvirt).
+# NOT yet tested with a full OS install — that's the remaining verification
+# step, deferred due to time cost (~20+ min for interactive install).
 
 virt-install \
   --name training-vm-test \
@@ -10,4 +12,4 @@ virt-install \
   --os-variant ubuntu24.04 \
   --network network=default \
   --graphics spice \
-  --cdrom /path/to/ubuntu-24.04-desktop-amd64.iso
+  --cdrom /home/ibnb/Downloads/ubuntu-24.04.3-desktop-amd64.iso
