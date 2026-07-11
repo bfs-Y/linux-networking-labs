@@ -40,3 +40,12 @@ Confirmed: default network (virbr0) runs DHCP, isolated network (virbr1)
 does not — explains why enp1s0 gets an IPv4 address automatically and
 enp7s0 only gets IPv6 link-local. Need a lab demonstrating DHCP lease
 process directly (not yet built).
+
+## Phase 0 — unattended install (real requirement, not yet done)
+Dry-run validated virt-install command exists (rebuild-training-vm.sh), but
+it boots to an INTERACTIVE installer, not unattended — does not meet Phase 0's
+actual bar ("rebuild in under 10 minutes from a script, no hands").
+Next step: write a minimal Ubuntu 24.04 autoinstall.yaml (Subiquity format),
+build a NoCloud seed (user-data + meta-data), point virt-install at both ISO
+and seed via --cloud-init or a second attached seed ISO. Test end-to-end.
+This is a real, focused task — do it fresh, not at the end of a long session.
