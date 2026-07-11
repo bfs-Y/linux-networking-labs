@@ -66,3 +66,14 @@ One manual click ("Install") was required due to Subiquity's default safety
 pause. Fix identified and applied to user-data for next run:
 `interactive-sections: []`. Next test: confirm fully unattended (zero clicks)
 completion with updated YAML.
+
+## Phase 0 — autoinstall FULLY CONFIRMED (end to end)
+training-vm-test successfully autoinstalled via virt-install + NoCloud seed,
+survived a reboot, and SSH login succeeded with configured username/password.
+Real debugging along the way: virtio-vga caused a black screen (switched to
+--video qxl), --location failed on desktop ISO ("couldn't find kernel" —
+desktop ISOs don't support --location extraction, only server ISOs do),
+one manual "Install" click was needed due to Subiquity's default
+confirmation pause (fix identified: interactive-sections: [] in YAML, not
+yet re-tested). This proves the rebuild-training-vm.sh concept works.
+Remaining: re-test with interactive-sections: [] for true zero-click.
