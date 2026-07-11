@@ -57,3 +57,12 @@ fields pre-filled. Installer paused there waiting for manual "Install" click
 (Subiquity default safety behavior). Fix for true zero-touch: add
 `interactive-sections: []` to autoinstall.yaml. Not yet re-tested with that
 setting added.
+
+## Phase 0 — autoinstall CONFIRMED working (partial automation achieved)
+Successfully autoinstalled Ubuntu 24.04 via virt-install + NoCloud seed ISO.
+Locale, keyboard, identity, storage, SSH all correctly pre-configured from
+YAML with zero manual input up to Subiquity's final confirmation screen.
+One manual click ("Install") was required due to Subiquity's default safety
+pause. Fix identified and applied to user-data for next run:
+`interactive-sections: []`. Next test: confirm fully unattended (zero clicks)
+completion with updated YAML.
