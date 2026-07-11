@@ -19,7 +19,7 @@ To reduce the chance of repeating this mistake, each lab machine now has a uniqu
 export PS1='%F{red}[%n@%m %1~]$ %f'
 
 ### Ubuntu Training VM
-PS1='\[\e[1;33m\][\u@\h \W]\$ '
+PS1='\[\e[1;33m\][\u@\h \W]\$\[\e[0m\] '
 
 ### CentOS 9
 export PS1='\[\e[1;35m\][\u@\h \W]\$ \[\e[0m\]'
