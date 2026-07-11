@@ -49,3 +49,11 @@ Next step: write a minimal Ubuntu 24.04 autoinstall.yaml (Subiquity format),
 build a NoCloud seed (user-data + meta-data), point virt-install at both ISO
 and seed via --cloud-init or a second attached seed ISO. Test end-to-end.
 This is a real, focused task — do it fresh, not at the end of a long session.
+
+## Phase 0 — autoinstall confirmed working, one setting needed for full unattended
+Autoinstall YAML correctly pre-configured locale/keyboard/identity/storage —
+confirmed by reaching Subiquity's "review your choices" screen with all
+fields pre-filled. Installer paused there waiting for manual "Install" click
+(Subiquity default safety behavior). Fix for true zero-touch: add
+`interactive-sections: []` to autoinstall.yaml. Not yet re-tested with that
+setting added.
