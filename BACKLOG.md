@@ -90,3 +90,13 @@ the value it needed. Reverted to requiring one manual "Install" click
 likely need `interactive-sections` to list only SPECIFIC sections to skip,
 not blanket-empty, or need additional YAML fields the blanket skip assumed
 were already answered.
+
+## Phase 0 — hand-built network topology (training-lab) — DONE
+Built a new libvirt network from scratch (training-lab, virbr2,
+192.168.200.0/24, NAT forwarding, DHCP range .2-.254). Defined, started,
+autostarted, verified bridge exists at OS level with correct addressing.
+Confirmed UUID/MAC auto-generate on virsh net-define (don't need to be
+specified). Validated via virt-install --dry-run that a guest could attach
+to it. Full DHCP-lease-to-a-real-guest test not performed (time-bounded) but
+XML/bridge-level verification is sufficient given identical structure to the
+already-proven-working default network.
