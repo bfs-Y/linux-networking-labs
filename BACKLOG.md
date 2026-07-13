@@ -77,3 +77,16 @@ one manual "Install" click was needed due to Subiquity's default
 confirmation pause (fix identified: interactive-sections: [] in YAML, not
 yet re-tested). This proves the rebuild-training-vm.sh concept works.
 Remaining: re-test with interactive-sections: [] for true zero-click.
+
+## Phase 0 — interactive-sections: [] caused a stuck install (needs investigation)
+Re-tested autoinstall with `interactive-sections: []` added to skip the
+manual "Install" confirmation click. Result: install appeared to run
+normally for ~10 minutes (high CPU activity, matching the first successful
+run's pace), then activity dropped to near-idle with no SSH access and a
+silent console — consistent with the installer stuck waiting on something,
+possibly a step interactive-sections: [] skipped past without providing
+the value it needed. Reverted to requiring one manual "Install" click
+(known working, see prior entry) until this is properly investigated —
+likely need `interactive-sections` to list only SPECIFIC sections to skip,
+not blanket-empty, or need additional YAML fields the blanket skip assumed
+were already answered.
