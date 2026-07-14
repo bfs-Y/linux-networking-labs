@@ -1,0 +1,4 @@
+192.168.100.1 dev wlp0s20f3 lladdr c4:16:c8:c0:0a:8e REACHABLE 
+192.168.122.227 dev virbr0 lladdr 52:54:00:60:ac:85 REACHABLE 
+192.168.122.207 dev virbr0 lladdr 52:54:00:06:81:f9 STALE 
+fe80::1 dev wlp0s20f3 lladdr c4:16:c8:c0:0a:8e router REACHABLE 
