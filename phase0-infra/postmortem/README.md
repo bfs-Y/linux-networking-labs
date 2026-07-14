@@ -1,5 +1,5 @@
 Date: 2026-07-09
-Lab: phase0/phase1 -- VM-to-VM connectivity check, training-vm <-> centos9 on virbr0
+Lab: phase0/phase1 -- VM-to-VM connectivity check, training-vm (Ubuntu 24.04) <-> centos9 on virbr0
 
 Symptom (verbatim command and output -- what I saw):
 ping -c 4 192.168.122.207
@@ -16,7 +16,7 @@ Paired tcpdump -i virbr0 (unexpected):
 15:29:16.614474 IP 192.168.122.207 > 192.168.122.1: ICMP echo reply, seq 1
 [seq 2-4 identical pattern, source 192.168.122.1 throughout]
 
-Root cause: I mistakenly believed I was running the ping from the training VM to test training-vm -> CentOS 9 (192.168.122.207) connectivity, but I had actually executed the command on the hypervisor, so the test only proved hypervisor -> CentOS 9 connectivity, not connectivity between the two VMs.
+Root cause: I mistakenly believed I was running the ping from the training VM to test training-vm -> CentOS 9 (192.168.122.207) connectivity, but I had actually executed the command on the hypervisor (Ubuntu, ibnb-Latitude-E7240), so the test only proved hypervisor -> CentOS 9 connectivity, not connectivity between the two VMs.
 
 Evidence: The initial tcpdump -i virbr0 capture showed ICMP packets with source IP 192.168.122.1 when the ping was expected to originate from 192.168.122.227, revealing a mismatch between expected and actual source address, later confirmed definitively by running hostname in each terminal.
 
