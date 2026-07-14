@@ -18,7 +18,7 @@ docker0  bridge    connected (externally)                 docker0
 
 ## Root Cause
 
-Both training-vm and centos9 were configured to automatically obtain an
+Both training-vm (Ubuntu 24.04) and centos9 were configured to automatically obtain an
 IPv4 address on enp7s0 (ipv4.method=auto), but that interface was attached
 to the libvirt isolated network, which intentionally provided neither an
 IP configuration nor a DHCP server.
