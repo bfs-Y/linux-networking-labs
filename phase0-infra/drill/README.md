@@ -1,4 +1,4 @@
-# Daily Drill — Phase 0 Infrastructure & Operational Discipline
+# Recall Practice — Phase 0 Infrastructure & Operational Discipline
 
 TOPIC: Wrong-Shell Diagnosis, PS1 Hardening, and Baseline Automation
 DATE STARTED: 2026-07-11

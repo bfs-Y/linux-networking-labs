@@ -1,4 +1,4 @@
-# Daily Drill — Phase 1: Interfaces & DHCP Diagnosis
+# Recall Practice — Phase 1: Interfaces & DHCP Diagnosis
 
 TOPIC: Layer 1/2 Elimination Sequence and DHCP Design-vs-Fault Reasoning
 DATE STARTED: 2026-07-13
