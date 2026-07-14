@@ -100,3 +100,9 @@ specified). Validated via virt-install --dry-run that a guest could attach
 to it. Full DHCP-lease-to-a-real-guest test not performed (time-bounded) but
 XML/bridge-level verification is sufficient given identical structure to the
 already-proven-working default network.
+
+## Phase 0 — capture-baseline.sh gap
+- Script captures ip a, ip neigh, ip route, ss -- but not iptables rules,
+  unlike the original manual baseline (baseline-iptables.txt). Add
+  `sudo iptables -L -n -v > "${OUTDIR}/baseline-iptables-${TIMESTAMP}.txt"`
+  to the script if firewall state should be part of every future baseline.
