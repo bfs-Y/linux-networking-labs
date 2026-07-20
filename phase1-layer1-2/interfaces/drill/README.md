@@ -5,7 +5,7 @@ DATE STARTED: 2026-07-13
 TARGET: answer all drills without checking reference — write the
         actual command you would type, not a description of it.
 
-DRILL 9 — Interface shows UP but no traffic passes, not even ARP
+DRILL 1 — Interface shows UP but no traffic passes, not even ARP
 replies from directly attached peers. Name the three checks, in
 order, that rule out Layer 1/2 before you move to Layer 3.
 YOUR ANSWER:
@@ -18,7 +18,7 @@ REFERENCE:
 If all three pass, move to Layer 2 verification via
 tcpdump -i <if> -n -e "arp or icmp" before assuming Layer 3.
 
-DRILL 10 — nmcli device status shows an interface permanently stuck
+DRILL 2 — nmcli device status shows an interface permanently stuck
 in "connecting (getting IP configuration)", retrying every ~45
 seconds, journalctl shows repeated "ip-config-unavailable / no
 lease". Write the two commands, run where, that tell you whether
@@ -32,7 +32,7 @@ virsh net-dumpxml <network>   (on the hypervisor)
 ps aux | grep dnsmasq   (on the hypervisor)
   -> confirm no dnsmasq process is bound to that network's config.
 
-DRILL 11 — You've confirmed a libvirt network has no DHCP by design,
+DRILL 3 — You've confirmed a libvirt network has no DHCP by design,
 and a VM keeps retrying anyway. You want to stop the retries but
 keep the connection profile for later (e.g. static IP work soon).
 Write the exact command.

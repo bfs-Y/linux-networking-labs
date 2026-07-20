@@ -4,7 +4,7 @@ TOPIC: Local Resolution Override and Backup Integrity
 DATE STARTED: 2026-07-14
 TARGET: answer all drills without checking reference.
 
-DRILL 15 — A domain resolves to the wrong IP even though DNS itself
+DRILL 1 — A domain resolves to the wrong IP even though DNS itself
 is confirmed healthy (dig against the real nameserver returns the
 correct answer). What local file, checked before DNS is ever
 queried, commonly explains this?
@@ -15,7 +15,7 @@ REFERENCE:
 nsswitch.conf's default resolution order checks hosts file entries
 before DNS.
 
-DRILL 16 — A "restore from backup" fix script reports success, but
+DRILL 2 — A "restore from backup" fix script reports success, but
 the bad state is still present afterward. What's the first thing to
 verify before trusting any restore script's backup source?
 YOUR ANSWER:
