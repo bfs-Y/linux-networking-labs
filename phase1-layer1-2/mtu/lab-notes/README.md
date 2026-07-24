@@ -1,4 +1,4 @@
-# Lab Notes: MTU Mismatch (enp1s0, centos9 vs training-vm)
+# Lab Notes: MTU Mismatch (enp1s0, centos9 CentOS Stream 9 vs training-vm Ubuntu 24.04)
 
 ## Objective
 Confirm and reproduce an MTU mismatch between training-vm (Ubuntu

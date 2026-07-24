@@ -2,7 +2,7 @@ TOPIC: MTU mismatch diagnosis and reproduction
 DATE STARTED: 2026-07-24
 TARGET: answer all drills without checking reference
 
-DRILL 1 - Small pings between two hosts succeed, but large file transfers hang or stall. What's your first hypothesis and what command tests it directly?
+DRILL 1 - Small pings between training-vm (Ubuntu 24.04) and centos9 (CentOS Stream 9) succeed, but large file transfers hang or stall. What's your first hypothesis and what command tests it directly?
 YOUR ANSWER:
 >
 REFERENCE:
@@ -20,17 +20,17 @@ YOUR ANSWER:
 REFERENCE:
 Yes - both are direct, real evidence that full-size packets traverse the path unfragmented and undropped. No further MTU diagnosis is needed; look elsewhere for the reported symptom's actual cause.
 
-DRILL 4 - You need to lower an interface's MTU to intentionally create a mismatch for testing. What command, and what should you do BEFORE running it?
+DRILL 4 - You need to lower centos9's (CentOS Stream 9) interface MTU to intentionally create a mismatch for testing. What command, and what should you do BEFORE running it?
 YOUR ANSWER:
 >
 REFERENCE:
 sudo ip link set dev <if> mtu <value> - but first read and save the CURRENT MTU (e.g. to a state file) so the fix can restore the exact original value instead of assuming a hardcoded default like 1500.
 
-DRILL 5 - After lowering one host's MTU to 1400 (peer still at 1500), what specific test result would confirm the mismatch, and what would a plain ping show instead?
+DRILL 5 - After lowering centos9's (CentOS Stream 9) MTU to 1400 (training-vm, Ubuntu 24.04, still at 1500), what specific test result would confirm the mismatch, and what would a plain ping show instead?
 YOUR ANSWER:
 >
 REFERENCE:
-A DF-bit ping sized to 1472 (testing 1500) from the peer would now fail. A plain, small ping (default ~56 bytes) would still succeed - that split (small works, large fails) is the actual MTU-mismatch signature.
+A DF-bit ping sized to 1472 (testing 1500) from training-vm would now fail. A plain, small ping (default ~56 bytes) would still succeed - that split (small works, large fails) is the actual MTU-mismatch signature.
 
 DRILL 6 - You start a tcpdump capture, then realize you pressed Ctrl+C before starting the traffic you meant to observe. What's wrong with the resulting capture file, and what's the correct sequence?
 YOUR ANSWER:
