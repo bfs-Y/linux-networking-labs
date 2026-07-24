@@ -107,3 +107,48 @@ Date       | What I got wrong                                          | Fixed?
 2026-07-10 | Assumed AppArmor was cause without checking logs first     | Yes
 2026-07-11 | Ran setcap on wrong host (VM instead of hypervisor)        | Yes
 2026-07-11 | Used || true instead of understanding set -e's real rule   | Yes
+
+## Update (2026-07-24) — New drills from PS1 fix recurrence and repo drift
+
+DRILL 9 - You have a color-coded, hostname-labeled PS1 already configured on a machine, and you STILL run a command on the wrong host. What does this tell you about the fix, and what's the actual remaining discipline required?
+YOUR ANSWER (write your answer):
+>
+REFERENCE:
+A visible prompt is necessary but not sufficient - it only helps if
+you actually read it before trusting output. The fix reduces the cost
+of checking, it doesn't remove the need to check.
+
+DRILL 10 - You switch to a second machine with its own clone of the same Git repo, and a directory you just created on the first machine "doesn't exist" there. Write the exact command to check before assuming corruption.
+YOUR ANSWER (write the command):
+>
+REFERENCE:
+git pull
+(run on the second machine's clone - it's very likely just stale and
+never fetched the other machine's pushed commits)
+
+DRILL 11 - Two competing PS1 (or PROMPT) assignments end up in the same shell config file after re-running a setup command. The prompt still looks correct. Is this actually fine to leave as-is?
+YOUR ANSWER (write your answer):
+>
+REFERENCE:
+No - the LAST assignment wins and happens to be correct right now,
+but it's fragile: removing the wrong line later, or a future edit,
+can silently revert the prompt with no visible warning. Clean up
+duplicates immediately, don't rely on assignment order alone.
+
+DRILL 12 - You want to verify a shell config file has exactly one active PS1/PROMPT line before trusting it, across both bash and zsh hosts. Write the two grep commands.
+YOUR ANSWER (write both commands):
+>
+REFERENCE:
+grep -n PS1 ~/.bashrc              (bash hosts)
+grep -n -E 'PS1|PROMPT' ~/.zshrc   (zsh hosts - zsh honors both names)
+
+SPEED ROUND (additions):
+Check for stale local repo before assuming a file is missing -> git pull
+Verify no duplicate prompt assignments (bash)                 -> grep -n PS1 ~/.bashrc
+Verify no duplicate prompt assignments (zsh)                  -> grep -n -E 'PS1|PROMPT' ~/.zshrc
+
+WEAK SPOT LOG (additions):
+Date       | What I got wrong                                                     | Fixed?
+2026-07-23 | Wrong-host mistakes recurred despite an existing PS1 fix being in place | Yes
+2026-07-24 | Assumed a second machine's repo clone matched the first without pulling | Yes
+2026-07-24 | Left duplicate PS1/PROMPT lines in configs after re-running setup       | Yes
