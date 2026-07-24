@@ -36,3 +36,19 @@ Fix applied:
 Automated or permanent version of the fix: Hostname-bearing, color-coded PS1 prompts per machine (distinct colors for hypervisor vs. each VM), plus distinct terminal window titles, so execution context is visible on sight -- not dependent on reading text or remembering to check.
 
 What would have caught this faster (detection gap): Should have verified execution context (hostname + ip -br a for source IP) before trusting the first ping result. That single check would have caught the wrong-shell error in seconds instead of several exchanges of investigation.
+
+## Update (2026-07-24)
+The PS1 fix proposed above was implemented. First iteration used
+distinct colors per host (hypervisor red, training-vm yellow, centos9
+magenta) - documented in hardening/ps1-hardening.md.
+
+Despite this fix being in place, wrong-host mistakes recurred multiple
+times in a later session (2026-07-23/24), indicating the fix alone was
+not sufficient - it requires actually reading the prompt before trusting
+command output, not just having it present.
+
+A second iteration (colors changed to red/green/blue) was applied during
+that session. This briefly left duplicate PS1/PROMPT assignments in each
+host's shell config (old and new lines both present) before being
+identified and cleaned up via sed. See hardening/ps1-hardening.md for
+current, verified configuration and the full history of both iterations.
