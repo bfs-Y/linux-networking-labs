@@ -116,3 +116,25 @@ its own topic under Phase 1 (Interfaces/Kernel Network Stack) — genuinely
 unbuilt. Consider: is a lab possible without real hardware access, or is
 this topic limited to "know what ethtool would show and why it doesn't
 apply here" as the lesson itself?
+
+## Phase 1 — remaining gaps, precise (found 2026-07-25 review)
+Current interfaces/ folder is actually about DHCP-retry-on-unused-interface
+(NetworkManager autoconnect loop on isolated network) — NOT about ip link/
+NIC driver/sys-class-net basics as the roadmap's "Interfaces and Kernel
+Network Stack" topic describes. Consider renaming interfaces/ to something
+like "dhcp-retry-unused-interface" for accuracy (same pattern as the
+ethtool rename), and building a SEPARATE genuine ip-link/sysfs basics topic.
+
+Still genuinely unbuilt in Phase 1:
+- ip link / NIC driver / /sys/class/net fundamentals (real gap, no folder
+  covers this yet)
+- 802.1Q VLAN tagging specifically (bridging/ covers veth+namespace, not
+  VLAN tagging as its own concept)
+- DHCP as its own dedicated lab (was reasoned into Phase 1 in an earlier
+  session, never written back into the original roadmap text — roadmap
+  and actual plan are out of sync, reconcile)
+- Bonding (active-backup, 802.3ad failover)
+
+Confirmed DONE in Phase 1: arp, bridging (veth/namespace), container-
+namespace, mtu, ethtool-throughput-diagnosis, and the DHCP-retry incident
+(currently misnamed as interfaces/).
