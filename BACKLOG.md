@@ -106,3 +106,13 @@ already-proven-working default network.
   unlike the original manual baseline (baseline-iptables.txt). Add
   `sudo iptables -L -n -v > "${OUTDIR}/baseline-iptables-${TIMESTAMP}.txt"`
   to the script if firewall state should be part of every future baseline.
+
+## Phase 1 — ethtool-the-tool still not covered as its own topic
+throughput-diagnosis postmortem correctly found ethtool's speed/duplex
+fields report "Unknown/Not reported" on virtio virtual NICs (no real PHY).
+That's a real, valuable finding, but it's not the same as learning what
+ethtool actually shows on real hardware. Roadmap still lists ethtool as
+its own topic under Phase 1 (Interfaces/Kernel Network Stack) — genuinely
+unbuilt. Consider: is a lab possible without real hardware access, or is
+this topic limited to "know what ethtool would show and why it doesn't
+apply here" as the lesson itself?
