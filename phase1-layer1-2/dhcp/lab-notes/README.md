@@ -26,3 +26,11 @@ colliding address to another host).
 ## Not yet covered (see BACKLOG.md)
 - Actual DORA process observation via tcpdump (DISCOVER/OFFER/REQUEST/ACK)
 - Lease renewal/expiry timing behavior
+
+## DORA observation — actual result (2026-07-27)
+Captured a REQUEST/ACK renewal exchange (not full DISCOVER/OFFER/REQUEST/ACK)
+since the client already held a lease. Real evidence from the ACK packet:
+Lease-Time=3600s, RN(T1)=1800s (50%), RB(T2)=3150s (87.5%) — confirms
+textbook DHCP renewal timing with actual captured values, not just theory.
+To see a full DISCOVER/OFFER exchange, a genuinely fresh client (new MAC,
+never leased before) would be needed — not yet attempted.
