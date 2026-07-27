@@ -37,3 +37,13 @@ See real DHCP lease records             -> cat /var/lib/libvirt/dnsmasq/<bridge>
 
 WEAK SPOT LOG:
 Date       | What I got wrong | Fixed?
+
+DRILL 04 — A DHCP lease has a Lease-Time of 3600 seconds. At roughly what
+percentage of the lease time does the client first attempt renewal (T1),
+and at what percentage does it attempt rebinding (T2) if renewal fails?
+YOUR ANSWER:
+>
+REFERENCE:
+T1 (renewal) at 50% of lease time, T2 (rebinding) at 87.5%. Confirmed live
+via capture: Lease-Time=3600s, RN(T1)=1800s (exactly 50%), RB(T2)=3150s
+(exactly 87.5%).
