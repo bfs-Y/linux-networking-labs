@@ -1,45 +1,58 @@
-DRILL 07 — Network Namespaces and the Docker Bridge
-Topic: Network Namespaces
-Repeat daily until instant.
+TOPIC: Network Namespaces and the Docker Bridge
+DATE STARTED: 2026-07-10
+TARGET: answer all drills without checking reference
 
---- CONCEPT ---
-A network namespace is a complete, private copy of the network stack: its own interfaces,
-its own IP, its own routing table, its own firewall rules — isolated from the host and from
-every other namespace, even though all of them run on the same physical kernel and hardware.
-Same idea as PID namespaces from Module 15, applied to networking instead of processes.
+DRILL 1 - What is a network namespace, and how is it the same underlying kernel concept as a PID namespace?
+YOUR ANSWER:
+>
+REFERENCE:
+A complete, private copy of the network stack - own interfaces, IP, routing table, firewall rules - isolated from the host and other namespaces, all on the same kernel. Same isolation primitive as PID namespaces, applied to networking instead of processes.
 
---- THE BRIDGE ---
-docker0 is a virtual switch on the HOST side. Every container's private namespace connects
-to it via a virtual cable. docker0 acts as the container network's gateway (e.g. 172.17.0.1),
-then forwards traffic out through the host's real interface (enp1s0) to reach the internet —
-same routing concept as Topic 2, just with an extra hop through the bridge first.
+DRILL 2 - What role does docker0 play between a container's private namespace and the host's real interface?
+YOUR ANSWER:
+>
+REFERENCE:
+docker0 is a virtual switch/bridge on the host side - each container's namespace connects to it via a veth pair. docker0 acts as the container network's gateway (e.g. 172.17.0.1), then forwards traffic through the host's real interface to actually reach the network.
 
---- READ ---
-ip a show docker0                              # host's view of the bridge — UP only when something's connected
-sudo docker ps                                  # what's running
-sudo docker inspect <container> | grep -A 20 "NetworkSettings"   # container's private IP/gateway
-curl -I http://<container-ip>                   # prove host-to-container connectivity across the bridge
+DRILL 3 - You see a container using 172.17.x.x and a VM using 192.168.x.x. Are these fundamentally different types of addressing?
+YOUR ANSWER:
+>
+REFERENCE:
+No - both are private, non-internet-routable ranges, just different reserved blocks chosen to avoid collision. The /16 vs /24 changes how much of the address is network vs host, same subnet math either way.
 
---- WHY 172.17.x.x LOOKS DIFFERENT FROM 192.168.x.x ---
-Both are private, non-internet-routable address ranges — just different reserved blocks,
-chosen so they never accidentally collide. /16 vs /24 changes how much of the address is
-"network" vs "host" — same subnet math as before, just a bigger available range for containers.
+DRILL 4 - Start a container and confirm it received its own private IP inside its own namespace. What two commands?
+YOUR ANSWER:
+>
+REFERENCE:
+sudo docker inspect <container> | grep -A 5 '"IPAddress"' - shows the container's private IP.
+ip a show docker0 - confirms the bridge came UP with the new attachment.
 
---- BREAK (start a namespace) ---
-sudo docker run -d --name test-container nginx
-sudo docker inspect test-container | grep -A 5 '"IPAddress"'   # confirm private IP assigned
-ip a show docker0                                                # confirm bridge came UP
+DRILL 5 - A container can't reach the internet, but the host can. First two checks, and what do they tell you if they pass?
+YOUR ANSWER:
+>
+REFERENCE:
+ip a show docker0 - confirms the bridge is UP. curl the container's IP directly from the host - confirms host-to-container connectivity works. If both pass, namespace isolation itself is fine; the problem is elsewhere.
 
---- FIX (clean teardown) ---
-sudo docker stop test-container
-sudo docker rm test-container
-ip a show docker0    # bridge returns to idle if no other containers are attached
+DRILL 6 - Host-to-container connectivity works, but the container still can't reach the internet. Where's the fault, and why isn't it a namespace problem?
+YOUR ANSWER:
+>
+REFERENCE:
+NAT/forwarding rules on the host (iptables), not the namespace - the container's isolation and its path IN are proven working; what's broken is specifically the path OUT through the host's NAT/forwarding config.
 
---- PRODUCTION SCENARIO ---
-A container can't reach the internet, but the host can.
-Check: ip a show docker0 — is the bridge UP?
-Check: docker inspect — does the container have a valid IP and gateway assigned?
-Check: from the host, curl the container's IP directly — does host-to-container work?
-If host-to-container works but container-to-internet doesn't, the problem is in NAT/forwarding
-rules on the host (iptables), not the namespace itself — namespace isolation is working correctly,
-the bridge's path OUT is what's broken.
+DRILL 7 - After stopping and removing a test container, what confirms the teardown was actually clean, not just that the container command succeeded?
+YOUR ANSWER:
+>
+REFERENCE:
+sudo docker ps -a | grep <container> should return nothing (or explicit "Confirmed clean" check), and ip a show docker0 should show the bridge returning to idle if no other containers remain attached.
+
+SPEED ROUND - cover reference column, answer aloud:
+Start a container -> sudo docker run -d --name <name> <image>
+Check container's private IP -> sudo docker inspect <container> | grep -A 5 '"IPAddress"'
+Check host's view of the bridge -> ip a show docker0
+Prove host-to-container connectivity -> curl -I http://\<container-ip\>
+Stop and remove a container -> sudo docker stop <container> && sudo docker rm <container>
+Confirm a container no longer exists -> sudo docker ps -a | grep <container>
+
+WEAK SPOT LOG:
+Date | What I got wrong | Fixed?
+2026-07-10 | (none logged at time of writing) |
