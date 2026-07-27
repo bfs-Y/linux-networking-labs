@@ -9,7 +9,7 @@ clean teardown.
 ## Procedure
 
 ### 1. Start a container (creates the namespace)
-    ./phase1-layer1-2/container-namespace/break/07-container-namespace.sh
+    ./phase1-layer1-2/container-namespace/break/01-container-namespace.sh
 Runs:
     sudo docker run -d --name test-container nginx
 Docker automatically:
@@ -26,7 +26,7 @@ Confirms: container is running, has its own private IP distinct from
 the host's addressing, and docker0 reflects the new attachment.
 
 ### 3. Clean teardown
-    ./phase1-layer1-2/container-namespace/fix/07-container-cleanup.sh
+    ./phase1-layer1-2/container-namespace/fix/01-container-cleanup.sh
 Runs:
     sudo docker stop test-container
     sudo docker rm test-container

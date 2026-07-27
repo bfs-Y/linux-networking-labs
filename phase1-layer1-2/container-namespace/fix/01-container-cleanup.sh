@@ -1,6 +1,6 @@
 #!/bin/bash
 # Fix 07: Stop and remove the test container cleanly
-# Pairs with: break/07-container-namespace.sh
+# Pairs with: break/01-container-namespace.sh
 
 echo "[FIX] Stopping test-container..."
 sudo docker stop test-container

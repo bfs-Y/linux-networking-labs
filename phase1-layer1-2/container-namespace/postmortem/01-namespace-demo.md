@@ -2,8 +2,8 @@ Date: 2026-07-10
 Lab: Phase 1 - Container network namespace isolation demonstration
 
 Note: This is a mechanism walkthrough, not a fault investigation. Nothing
-was broken; break/07-container-namespace.sh demonstrates namespace
-isolation by starting a real container, and fix/07-container-cleanup.sh
+was broken; break/01-container-namespace.sh demonstrates namespace
+isolation by starting a real container, and fix/01-container-cleanup.sh
 tears it down cleanly. No root cause section applies since no fault was
 injected.
 

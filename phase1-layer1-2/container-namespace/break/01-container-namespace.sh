@@ -1,7 +1,7 @@
 #!/bin/bash
 # Break 07: Start a container to demonstrate network namespace isolation
 # Effect: creates a process with its own private network stack, bridged via docker0
-# Recovery: fix/07-container-cleanup.sh
+# Recovery: fix/01-container-cleanup.sh
 
 echo "[BREAK] Starting test container..."
 sudo docker run -d --name test-container nginx
