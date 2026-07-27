@@ -1,5 +1,5 @@
 #!/bin/bash
-# Fix 07: Stop and remove the test container cleanly
+# Fix 01: Stop and remove the test container cleanly
 # Pairs with: break/01-container-namespace.sh
 
 echo "[FIX] Stopping test-container..."

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Break 07: Start a container to demonstrate network namespace isolation
+# Break 01: Start a container to demonstrate network namespace isolation
 # Effect: creates a process with its own private network stack, bridged via docker0
 # Recovery: fix/01-container-cleanup.sh
 
