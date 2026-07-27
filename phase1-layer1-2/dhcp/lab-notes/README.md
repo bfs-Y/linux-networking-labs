@@ -1,0 +1,28 @@
+# Lab Notes — DHCP Pool Range Awareness
+
+## Environment
+Tested on ubuntulab (Ubuntu 24.04.4, enp1s0, 192.168.122.227) against
+libvirt's `default` network (192.168.122.0/24, DHCP range .2-.254).
+
+## Why this scenario
+A manually-assigned static IP colliding with a DHCP pool is a real,
+common operational mistake — no attacker involved, just a config gap
+between "what an admin assigns by hand" and "what DHCP is actively
+managing." Chosen specifically because it's the kind of subtle,
+intermittent bug that's hard to diagnose in production (the conflict
+may not surface immediately — only when DHCP actually hands out the
+colliding address to another host).
+
+## Caveats
+- This lab only demonstrates the RISK (a secondary IP inside the pool
+  range) — it does not simulate the actual conflict moment (two hosts
+  claiming the same IP simultaneously). That would require a second VM
+  actually receiving that exact address via DHCP, which is timing-
+  dependent and not easily forced on demand.
+- Real DHCP lease data can be cross-referenced at
+  /var/lib/libvirt/dnsmasq/virbr0.status if you want to confirm the
+  pool's current assignments before running this lab again.
+
+## Not yet covered (see BACKLOG.md)
+- Actual DORA process observation via tcpdump (DISCOVER/OFFER/REQUEST/ACK)
+- Lease renewal/expiry timing behavior
