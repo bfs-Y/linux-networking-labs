@@ -2,15 +2,13 @@ Date: 2026-07-30
 Lab: Phase 1 - 802.1Q VLAN tagging verification
 
 Symptom (verbatim command and output):
-Training scenario (not a real reported incident): a VLAN sub-interface (enp1s0.100) was configured on
-ubuntulab (Ubuntu 24.04), with a hypothetical premise that a
-downstream switch/monitoring team reported seeing UNTAGGED frames
-arriving on that segment, breaking VLAN isolation - used as the basis for a hands-on verification exercise.
+Set up a VLAN sub-interface (enp1s0.100) on ubuntulab (Ubuntu 24.04)
+and needed to verify whether 802.1Q tagging was actually happening on
+the wire, not just configured correctly.
 
-Root cause: No tagging fault found on ubuntulab. Packet capture on the
-parent interface (enp1s0) directly confirmed real 802.1Q VLAN ID 100
-headers present on every relevant outbound frame. The downstream
-"untagged frames" report is not supported by evidence from this host.
+Root cause: N/A - this was a verification exercise, not a fault
+investigation. Packet capture on the parent interface confirmed real
+802.1Q VLAN ID 100 headers present on every relevant outbound frame.
 
 Evidence:
 Sub-interface created and confirmed:
@@ -32,7 +30,7 @@ Confirms: ethertype 0x8100 and "vlan 100" present on every frame sent
 through the sub-interface - real tagging, on the wire, not just
 configuration intent.
 
-Separate, unrelated observation (not a tagging fault):
+Separate, unrelated observation (not a tagging issue):
 $ ping -I enp1s0.100 -c 4 10.100.0.1
 4 packets transmitted, 0 received, 100% packet loss
 The ARP requests for 10.100.0.1 go out correctly tagged (visible in
@@ -46,26 +44,17 @@ Stayed the same: parent interface enp1s0 config, routing, ARP state on
 other interfaces.
 
 Fix applied:
-None required on ubuntulab - no fault found here. If the downstream
-report is accurate, the fault must live between this host and the
-downstream observation point (e.g. a switch port configured for access
-mode instead of trunk, stripping the tag; or an intermediate device
-that isn't VLAN-aware). A single-host capture cannot prove or disprove
-a fault at that point - would require a capture taken AT or NEAR the
-downstream location itself.
+None required - tagging confirmed working correctly on first setup.
 
 Automated or permanent version of the fix:
-N/A - no fault found on this host to automate a fix for. Operational
-takeaway: when a tagging complaint spans multiple hops, verify each
-hop independently with its own capture rather than trusting one
-endpoint's clean result to vindicate or condemn the whole path.
+N/A. Operational takeaway: never trust ip link show / ip -d link show
+alone to confirm tagging behavior - it only shows configuration, not
+what's actually on the wire. Always verify with a capture on the
+parent interface, since capturing on the VLAN sub-interface itself
+would show traffic after the tag is already stripped.
 
 Detection gap:
-The original report ("untagged frames downstream") could not be
-confirmed or denied by testing only the originating host. Capturing
-on the wrong interface (the VLAN sub-interface instead of the parent)
-would have produced a MISLEADING false-negative - traffic already
-untagged by the time it reached that virtual interface, even with
-correct tagging happening beneath it. Always capture on the parent
-interface when verifying 802.1Q tagging is genuinely present on the
-wire.
+N/A - this was a deliberate verification exercise, not an incident
+with a detection delay. The general lesson: config output confirming
+intent is not the same as proof of wire behavior; always verify with
+a capture at the correct point in the path.
