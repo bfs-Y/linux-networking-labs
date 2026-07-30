@@ -2,10 +2,10 @@ Date: 2026-07-30
 Lab: Phase 1 - 802.1Q VLAN tagging verification
 
 Symptom (verbatim command and output):
-Reported: a colleague configured a VLAN sub-interface (enp1s0.100) on
-ubuntulab (Ubuntu 24.04) and claimed traffic was tagged correctly, but
-a downstream switch/monitoring team reported seeing UNTAGGED frames
-arriving on that segment, breaking VLAN isolation.
+Training scenario (not a real reported incident): a VLAN sub-interface (enp1s0.100) was configured on
+ubuntulab (Ubuntu 24.04), with a hypothetical premise that a
+downstream switch/monitoring team reported seeing UNTAGGED frames
+arriving on that segment, breaking VLAN isolation - used as the basis for a hands-on verification exercise.
 
 Root cause: No tagging fault found on ubuntulab. Packet capture on the
 parent interface (enp1s0) directly confirmed real 802.1Q VLAN ID 100
