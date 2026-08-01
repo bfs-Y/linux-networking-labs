@@ -1,7 +1,7 @@
 #!/bin/bash
-# Break 06: Silently drop outbound ICMP to a target, simulating "request sent, no reply"
+# Break 01: Silently drop outbound ICMP to a target, simulating "request sent, no reply"
 # Effect: ping shows 100% packet loss, tcpdump shows requests leaving with no replies
-# Recovery: fix/06-traffic-restore.sh
+# Recovery: fix/01-traffic-restore.sh
 
 TARGET="8.8.8.8"
 

@@ -1,6 +1,6 @@
 #!/bin/bash
-# Fix 06: Remove the ICMP drop rule
-# Pairs with: break/06-traffic-drop.sh
+# Fix 01: Remove the ICMP drop rule
+# Pairs with: break/01-traffic-drop.sh
 
 TARGET="8.8.8.8"
 

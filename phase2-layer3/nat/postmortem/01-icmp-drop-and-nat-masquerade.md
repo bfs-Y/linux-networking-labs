@@ -31,16 +31,16 @@ source address never come back).
 Evidence:
 
 Scenario 1, re-verified end to end (2026-08-01):
-$ bash break/06-traffic-drop.sh
+$ bash break/01-traffic-drop.sh
   Rule added, confirmed via iptables -L OUTPUT -n -v; ping 100% loss.
-$ bash fix/06-traffic-restore.sh
+$ bash fix/01-traffic-restore.sh
   Rule removed, confirmed clean; ping 2/2 received, 0% loss.
 Clean, correct, matches the script's documented behavior exactly.
 
 Scenario 2, re-verified end to end (2026-08-01), with real complications:
-$ bash break/06b-nat-masquerade-missing.sh
+$ bash break/02-nat-masquerade-missing.sh
   Flushed nat POSTROUTING as designed.
-$ bash verify/06-nat-verify.sh
+$ bash verify/02-nat-verify.sh
   FIRST RUN: failed for an unrelated reason - a stale, stopped
   container (nat-test) from a prior session caused "container is not
   running" and 0 packets captured. Not a NAT fault - a stale test
@@ -57,7 +57,7 @@ $ sudo docker exec nat-test curl -sv -o /dev/null http://example.com --max-time 
   * Resolving timed out after 5001 milliseconds
   Confirms: complete outbound failure, not just wrong source IP.
 
-$ bash fix/06b-nat-masquerade-restore.sh
+$ bash fix/02-nat-masquerade-restore.sh
   Restored MASQUERADE on bond0 (correctly auto-detected the current
   default-route interface, which is now bond0 following this
   session's earlier bonding work - not enp1s0/enp7s0 individually).
@@ -82,7 +82,7 @@ correctly adapted to bond0 without any script changes needed.
 
 Automated or permanent version of the fix:
 Both scripts already exist and are correctly automated (break/fix
-pairs). Real gap found: verify/06-nat-verify.sh's packet-capture
+pairs). Real gap found: verify/02-nat-verify.sh's packet-capture
 based proof did not reliably demonstrate the fault or the fix on
 either run - it should be revised to also perform a direct
 docker exec curl check (as done manually here) rather than relying

@@ -1,4 +1,4 @@
-DRILL 06 — Traffic Analysis with tcpdump
+DRILL 01 — Traffic Analysis with tcpdump
 Topic: Traffic Analysis
 Repeat daily until instant.
 

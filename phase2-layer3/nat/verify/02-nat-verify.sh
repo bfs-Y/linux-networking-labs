@@ -1,5 +1,5 @@
 #!/bin/bash
-# Break 06b: Prove NAT/MASQUERADE rewrites container traffic
+# Verify 02: Prove NAT/MASQUERADE rewrites container traffic
 # This isn't a destructive break — it's a hands-on verification that the
 # NAT mechanism is actually firing, not just present in the ruleset.
 # Belongs under Topic 6 (Firewalls) since MASQUERADE lives in the iptables nat table.
