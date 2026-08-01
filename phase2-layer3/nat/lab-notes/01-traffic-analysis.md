@@ -1,5 +1,5 @@
-DRILL 01 — Traffic Analysis with tcpdump
-Topic: Traffic Analysis
+# Lab Notes: Traffic Analysis with tcpdump
+Topic: Traffic Analysis, NAT/MASQUERADE verification, banner grabbing, pcap capture
 Repeat daily until instant.
 
 --- READ ---
