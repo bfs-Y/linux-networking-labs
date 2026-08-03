@@ -98,3 +98,19 @@ distinguish "test never ran" from "test ran and failed" is a real gap;
 future revision should add an explicit pre-check (is the container
 actually running?) and a direct connectivity check independent of the
 packet capture, so failure modes are distinguishable.
+
+## Follow-up finding (2026-08-01, verify script rewrite)
+Rewrote verify/02-nat-verify.sh to use a direct connectivity check
+instead of packet capture. During testing, found:
+- alpine's busybox wget failed against a hostname ("bad address") even
+  though DNS resolution itself succeeded via nslookup — tool-specific
+  quirk, not a real fault.
+- wget against a raw IP (93.184.216.34) genuinely timed out.
+- iptables -t nat -L POSTROUTING -n -v confirmed MASQUERADE rule IS
+  present and has matched 4 packets — NAT rewriting is happening.
+- This means the actual failure is downstream of NAT (rewriting works),
+  likely a FORWARD chain or firewall rule blocking outbound HTTP after
+  translation. NOT YET ROOT-CAUSED — stopped here for tonight, logged
+  as an open, real finding rather than a closed conclusion.
+Next session: check `iptables -L FORWARD -n -v` and `nft list ruleset`
+for anything blocking outbound traffic post-NAT.
