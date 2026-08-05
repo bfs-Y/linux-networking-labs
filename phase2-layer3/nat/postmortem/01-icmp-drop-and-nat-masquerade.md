@@ -114,3 +114,23 @@ instead of packet capture. During testing, found:
   as an open, real finding rather than a closed conclusion.
 Next session: check `iptables -L FORWARD -n -v` and `nft list ruleset`
 for anything blocking outbound traffic post-NAT.
+
+## Final resolution (2026-08-05)
+Extended debugging traced the remaining failure through DOCKER-USER,
+DOCKER-FORWARD, and ufw's routed-traffic chains. Found and fixed a REAL
+gap: `ufw` defaults to `deny (routed)`, silently blocking all
+container-to-internet forwarded traffic with no rule permitting it.
+Fixed with: `sudo ufw route allow in on docker0`.
+
+After that fix, connections STILL failed — traced further, and the
+actual final cause was unrelated to firewall/NAT at all: the target IP
+being tested (93.184.216.34) was a stale/outdated address for
+example.com. Confirmed via fresh `dig +short example.com` returning
+different current IPs (172.66.147.243, 104.20.23.154). Testing against
+the correct, current IP succeeded immediately, both from the host
+directly and via the container.
+
+Real lesson: always re-resolve a hostname fresh rather than trusting a
+previously-recorded IP in a test script or manual command — IPs for
+real-world domains change over time, and a stale IP produces symptoms
+indistinguishable from a genuine local network fault.
