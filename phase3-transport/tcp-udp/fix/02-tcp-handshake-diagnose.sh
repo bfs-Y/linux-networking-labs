@@ -1,6 +1,6 @@
 #!/bin/bash
-# Topic 2c (TCP/IP): Diagnose a TCP handshake failure
-# Usage: ./02c-tcp-handshake-diagnose.sh <target-hostname>
+# Topic 02 (TCP/IP): Diagnose a TCP handshake failure
+# Usage: ./02-tcp-handshake-diagnose.sh <target-hostname>
 # Isolates whether a connection failure is local/ISP-side or remote/destination-side
 
 TARGET="${1:-neverssl.com}"

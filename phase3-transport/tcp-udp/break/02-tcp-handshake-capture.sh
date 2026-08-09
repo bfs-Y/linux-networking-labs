@@ -1,5 +1,5 @@
 #!/bin/bash
-# Topic 2c: Capture and decode a real TCP handshake
+# Topic 02: Capture and decode a real TCP handshake
 
 IFACE=$(ip route | grep default | awk '{print $5}' | head -1)
 TARGET_IP=$(dig +short example.com | head -1)

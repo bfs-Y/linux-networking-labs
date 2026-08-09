@@ -1,5 +1,5 @@
 DRILL 2c — TCP Handshake Mechanics & Failure Diagnosis
-Topic: TCP/IP fundamentals (extends 02b)
+Topic: TCP/IP fundamentals (extends 01)
 Repeat until flag recognition and seq/ack math are automatic.
 
 ==============================
@@ -54,6 +54,6 @@ the difference between them is the answer.
 RUN THE SCRIPTS
 ==============================
 
-break/02c-tcp-handshake-capture.sh       — capture and decode a live handshake
-fix/02c-tcp-handshake-diagnose.sh <host>  — diagnose a failing connection
-  example: fix/02c-tcp-handshake-diagnose.sh neverssl.com
+break/02-tcp-handshake-capture.sh       — capture and decode a live handshake
+fix/02-tcp-handshake-diagnose.sh <host>  — diagnose a failing connection
+  example: fix/02-tcp-handshake-diagnose.sh neverssl.com

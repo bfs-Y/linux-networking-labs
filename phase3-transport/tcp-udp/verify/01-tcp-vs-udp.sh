@@ -1,5 +1,5 @@
 #!/bin/bash
-# Topic 2 (TCP/IP): Prove the TCP vs UDP packet-count tradeoff with real captures
+# Topic 01 (TCP/IP): Prove the TCP vs UDP packet-count tradeoff with real captures
 # Not destructive — a verification/comparison exercise, same evidence standard as every topic.
 
 echo "=== UDP capture (DNS lookup) ==="
