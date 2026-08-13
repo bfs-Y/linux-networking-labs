@@ -1,4 +1,4 @@
-DRILL 2b — TCP vs UDP: The Real Tradeoff
+# Lab Notes: TCP vs UDP - The Real Tradeoff
 Topic: TCP/IP fundamentals
 Repeat until the reasoning is automatic, not just the packet counts.
 

@@ -1,5 +1,5 @@
-DRILL 2c — TCP Handshake Mechanics & Failure Diagnosis
-Topic: TCP/IP fundamentals (extends 01)
+# Lab Notes: TCP Handshake Mechanics and Failure Diagnosis
+Topic: TCP/IP fundamentals, extends 01-tcp-vs-udp-tradeoff
 Repeat until flag recognition and seq/ack math are automatic.
 
 ==============================
