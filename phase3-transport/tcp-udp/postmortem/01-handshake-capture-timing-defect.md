@@ -98,21 +98,3 @@ Not resolved tonight — a possible next step is adding a short mandatory
 settle delay AFTER confirming the process is running, or using a
 capture-ready signal more precise than PID/file existence.
 
-## Fix applied and partial result (2026-08-15)
-Applied the identified fix: verify tcpdump is running (poll loop) before
-triggering traffic. This alone was insufficient — testing revealed a
-SECOND, distinct bug: DNS round-robin (dig and curl each resolving
-independently) could return DIFFERENT IPs, causing the capture filter
-to watch the wrong address entirely. Confirmed via repeated `dig`
-queries returning alternating IPs (104.20.23.154 / 172.66.147.243).
-Fixed by pinning curl to the exact resolved IP with `--resolve`.
-
-Result: capture now reliably gets packets (8 captured vs 0 before), but
-STILL misses the opening SYN/SYN-ACK — the connection completes faster
-than the verification loop's ~4-second max wait allows tcpdump to fully
-attach. Real, honest remaining gap: even "confirmed running" via
-process-alive + file-exists checks isn't sufficient proof the capture
-is ready to catch the very first packets of a fast local connection.
-Not resolved tonight — a possible next step is adding a short mandatory
-settle delay AFTER confirming the process is running, or using a
-capture-ready signal more precise than PID/file existence.
