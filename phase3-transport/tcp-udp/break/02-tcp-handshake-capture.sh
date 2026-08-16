@@ -25,7 +25,7 @@ for i in $(seq 1 20); do
     fi
     sleep 0.2
 done
-curl -s -o /dev/null http://example.com
+curl -s -o /dev/null --resolve "example.com:80:$TARGET_IP" http://example.com
 sleep 1
 sudo kill $TCPDUMP_PID 2>/dev/null
 wait $TCPDUMP_PID 2>/dev/null
