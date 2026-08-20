@@ -27,7 +27,7 @@ following a consistent pattern: `break/ fix/ harden/ drill/ postmortem/`.
   design-vs-fault postmortem), ARP resolution mechanism (real capture with
   microsecond-precision causal ordering), container namespaces
 - `phase2-layer3/` — IP addressing, routing, NAT, ICMP (in progress)
-- `phase3-transport/` — TCP/UDP connection states, load balancing (in progress)
+- `phase3-layer4-transport/` — TCP/UDP connection states, load balancing (in progress)
 - `phase4-dns/` — DNS resolution (in progress)
 - `phase5-observability/` — tcpdump/Wireshark, nmap, log analysis (not yet built)
 - `phase6-capstone/` — multi-fault incidents, networking-focused CTF (not yet built)
