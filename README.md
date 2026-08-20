@@ -15,8 +15,20 @@ assumes an attacker, it belongs in `linux-security-labs`, not here.
 
 ## Structure
 
-Organized by learning phase (roughly OSI-layer-aligned), each topic folder
-following a consistent pattern: `break/ fix/ harden/ drill/ postmortem/`.
+Organized by learning phase, each topic folder following a core pattern:
+`break/ fix/ drill/ lab-notes/ postmortem/`. A `verify/` folder is added
+where a topic needs a direct outcome check distinct from the fix itself.
+
+Folder names include an explicit OSI layer number through Phase 3, where
+each phase maps cleanly to one layer. Phase 4 onward drop the layer
+number deliberately: DNS is application-layer but commonly taught as its
+own topic, and Observability/Capstones are intentionally cross-layer by
+design -- forcing a single layer number onto them would misrepresent what
+they cover.
+
+Defensive/hardening content that assumes an adversary lives in the
+companion repo, `linux-security-labs`, not here -- see the scope note
+above.
 
 ## Phases
 
