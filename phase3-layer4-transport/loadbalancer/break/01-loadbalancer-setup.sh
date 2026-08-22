@@ -1,7 +1,7 @@
 #!/bin/bash
-# Break 08: Stand up two backend servers and an nginx load balancer in front of them
+# Break 01: Stand up two backend servers and an nginx load balancer in front of them
 # Effect: demonstrates round-robin distribution across independent backends
-# Recovery: fix/08-loadbalancer-verify.sh (verification, not removal — this isn't a "break" in the destructive sense)
+# Recovery: verify/01-loadbalancer-verify.sh (verification, not removal — this isn't a "break" in the destructive sense)
 
 mkdir -p ~/lb-test/server1 ~/lb-test/server2
 echo "Response from Server 1" > ~/lb-test/server1/index.html

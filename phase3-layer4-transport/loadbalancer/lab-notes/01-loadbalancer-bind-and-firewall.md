@@ -49,3 +49,32 @@ not one: does the config work, does the process bind to the right
 interface, and does the firewall know this port exists. All three can be
 true or false independently - "it works" from localhost answers none of
 them for real traffic.
+
+--- NOT THE SAME AS WORKER PROCESSES ---
+nginx master+workers share ONE socket because they're the same process
+listening once. Load balancing is different: multiple SEPARATE, independent
+servers/processes (possibly on different machines, different IPs), with a
+proxy in front deciding which one gets each request. Don't conflate
+"nginx has multiple worker processes" with "nginx is load balancing" -
+they solve different problems at different layers.
+
+--- CRITICAL LESSON: 502 BAD GATEWAY ---
+502 means the PROXY is alive and working, but the BACKEND it tried to reach
+refused or failed. Always check backend health FIRST when you see 502 -
+don't assume the proxy config is wrong. Diagnosis order for any 502:
+  1. ss -tulnp on each backend port - are they actually listening?
+  2. systemctl status on the proxy itself - is IT actually running?
+  3. nginx -t - is the current config even valid?
+  4. Only after confirming proxy + config are healthy, suspect backend
+     application logic.
+This order matters because it goes from cheapest/fastest check to most
+expensive - don't start debugging application code before ruling out
+"is anything even listening."
+
+--- CRITICAL LESSON: SILENT CONFIG FAILURES ---
+A broken symlink (typo in filename) doesn't always fail loudly the moment
+you create it. It can sit dormant until something later triggers a config
+re-check (reload, restart, timer) - at which point the ENTIRE service can
+go down, possibly hours later, with no immediate symptom at the time the
+mistake was made. Always run `nginx -t` immediately after any config or
+symlink change - never assume "no error now" means "no error ever."
