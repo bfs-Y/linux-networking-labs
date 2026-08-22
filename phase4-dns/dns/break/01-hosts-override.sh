@@ -22,6 +22,6 @@ echo "[BREAK] Injecting wrong entry: $WRONG_IP $TARGET_DOMAIN"
 echo "$WRONG_IP $TARGET_DOMAIN" | sudo tee -a "$HOSTS_FILE" > /dev/null
 
 echo "[VERIFY] Resolution now shows:"
-getent hosts "$TARGET_DOMAIN"
+getent ahosts "$TARGET_DOMAIN"
 echo "[PROOF] If the IP above matches $WRONG_IP, /etc/hosts is silently overriding DNS."
 echo "Backup saved at: $BACKUP — use fix/01-hosts-restore.sh to recover."
