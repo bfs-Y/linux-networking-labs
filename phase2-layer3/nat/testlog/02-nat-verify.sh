@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verify: confirm NAT/MASQUERADE is actually working, using a direct
+# Testlog: confirm NAT/MASQUERADE is actually working, using a direct
 # connectivity check instead of a fragile packet-capture timing race.
 set -euo pipefail
 

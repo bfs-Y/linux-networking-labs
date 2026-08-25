@@ -1,5 +1,5 @@
 #!/bin/bash
-# Verify 01: Diagnose a load balancer returning 502, and verify correct distribution
+# Testlog 01: Diagnose a load balancer returning 502, and verify correct distribution
 # Pairs with: break/01-loadbalancer-setup.sh
 # Common real failure: backends die independently of the proxy. 502 = proxy alive, backend dead.
 
