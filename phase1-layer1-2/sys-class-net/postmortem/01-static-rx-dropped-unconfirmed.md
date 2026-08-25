@@ -62,3 +62,27 @@ throughput fault, unreproduced MTU "hang"). The recurring lesson:
 always test whether a reported symptom is currently reproducible
 before investigating root cause, and never conclude causation from
 a single static number without a controlled before/after comparison.
+
+## Follow-up attempt (2026-08-25) - still unconfirmed
+Attempted a live correlation test (fix/01-confirm-drop-source.sh) sending
+real UDP traffic from centos9 to an unallowed port (59999) on ubuntulab,
+sampling rx_dropped and nft ruleset counters before/after.
+
+Real defects found in the test itself, not yet resolved:
+- nc -w0 fails on ncat (requires timeout >0) - fixed with -w1.
+- Script's counter extraction (grep "drop") matches multiple unrelated
+  rules across the ruleset (ct state invalid drop, ufw-not-local drop,
+  policy drop declarations, IPv6 equivalents) - not isolated to the
+  actual default-policy drop, so the counter read is unreliable.
+- Deeper open question: nft -a list ruleset (via iptables-nft) does not
+  appear to expose a single dedicated counter for "packets that fell
+  through every rule and hit the final policy drop" - every visible
+  counter belongs to a specific named chain/rule, not the policy itself.
+  Not yet confirmed whether such a counter exists elsewhere (e.g.
+  iptables -L -v -n directly, or dmesg/journalctl with rate-limited
+  logging already configured in ufw-after-logging-input).
+
+Still unconfirmed. Next attempt should start from `ufw-after-logging-input`
+(handle 140 - already logs UFW BLOCK events at a rate limit) as the more
+promising lead for actual correlation, rather than trying to isolate a
+policy-drop counter that may not exist as a standalone number.
