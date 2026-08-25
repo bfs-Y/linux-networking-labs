@@ -57,3 +57,4 @@ WEAK SPOT LOG:
 Date | What I got wrong | Fixed?
 2026-07-27 | Ran commands from the wrong machine's repo clone without pulling first (repeat of earlier session's lesson) | Y
 2026-07-27 | Initially unsure whether firewall drops would show in rx_dropped vs the firewall's own counters (different accounting layers) | Y
+2026-08-25 | Ran drill cold. Missed drill 2 - said "yes, still check each rx_*_error individually" when reference says rx_errors is the summary/parent counter and zero there rules out the rest in one check. Drill 1 and 3 correct. Not re-verified live against ubuntulab this session - worth confirming next time rx_errors comes up for real. | N
