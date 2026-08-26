@@ -28,7 +28,9 @@ they cover.
 
 Defensive/hardening content that assumes an adversary lives in the
 companion repo, `linux-security-labs`, not here -- see the scope note
-above.
+above. (Note: `phase0-infra/hardening/ps1-hardening.md` is PS1 prompt
+cosmetics, not adversarial/security content, despite the folder name --
+it correctly stays here, not in the companion repo.)
 
 ## Phases
 
