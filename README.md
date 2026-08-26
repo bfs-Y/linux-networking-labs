@@ -6,7 +6,7 @@ captures as evidence. Every finding is backed by command output, not
 assumption.
 
 Companion repos:
-- `linux-break-fix-harden` — general Linux administration
+- `linux-fundamentals-labs` — general Linux administration
 - `linux-security-labs` — attack/defense/detection content (ARP poisoning,
   firewall exploitation, TLS spoofing, and other adversarial scenarios)
 
