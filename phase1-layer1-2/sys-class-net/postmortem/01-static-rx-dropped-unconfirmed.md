@@ -86,3 +86,44 @@ Still unconfirmed. Next attempt should start from `ufw-after-logging-input`
 (handle 140 - already logs UFW BLOCK events at a rate limit) as the more
 promising lead for actual correlation, rather than trying to isolate a
 policy-drop counter that may not exist as a standalone number.
+
+## Follow-up - resolved (2026-08-26)
+Completed the live correlation test started 2026-08-25 (see prior entry).
+Corrected the send/verify sequence (earlier attempts pressed Enter without
+actually sending traffic from centos9 first - caught by checking for zero
+LOG_COUNT alongside zero RX_DELTA, rather than trusting a "no signal"
+result at face value).
+
+Real test, sent 20 UDP packets from centos9 (192.168.122.207) to
+ubuntulab (192.168.122.226) port 59999, no allow rule for that port:
+
+Result:
+  rx_dropped delta:     0
+  UFW BLOCK log count:  10 (of 20 sent - logging rule is rate-limited,
+                          "limit rate 3/minute burst 10 packets", so this
+                          undercounts actual drops, it's a sample not an
+                          exhaustive count)
+
+Conclusion: CONFIRMED that firewall (UFW/netfilter) drops do NOT
+increment /sys/class/net/<if>/statistics/rx_dropped, regardless of
+volume. rx_dropped is a driver/NIC-level counter, incremented before a
+packet is handed to netfilter. Firewall drops happen later in the stack
+and are invisible to this counter entirely.
+
+This resolves the original open question from a different angle than
+expected: not "was the firewall responsible for the historical
+rx_dropped=43" but "CAN the firewall ever be responsible for rx_dropped
+increments at all" - and the answer is no, architecturally, regardless
+of firewall configuration or traffic volume. The original historical
+rx_dropped=43 remains unattributed to any confirmed cause - the
+firewall theory is now definitively ruled out, not just unconfirmed.
+
+If this symptom recurs, the correct next investigation target is
+driver/NIC-level: ethtool -S <if> for extended driver statistics, dmesg
+for driver-level errors/ring buffer warnings, not firewall logs.
+
+Script fix/01-confirm-drop-source.sh updated same day: original verdict
+logic only checked rx_dropped delta and incorrectly reported "NO SIGNAL"
+even when UFW log evidence alone proved real drops occurred. Verdict
+logic now handles rx_dropped=0 + log_count>0 as its own correctly
+labeled, confirmed outcome.
