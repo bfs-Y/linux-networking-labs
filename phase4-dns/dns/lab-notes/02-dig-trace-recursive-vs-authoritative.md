@@ -91,3 +91,18 @@ Both appear in nearly every dig response seen this phase
 requests and receives recursive service - contrast with `+trace`
 mode, where dig deliberately does its OWN iterative walk instead of
 asking a server to recurse for it.
+
+--- dig @server AND DIRECT CACHE EVIDENCE ---
+`dig @8.8.8.8 wikipedia.org` confirmed reaching a named external
+resolver directly (SERVER: 8.8.8.8#53), bypassing the local stub
+(127.0.0.53) entirely - the tool that was the wrong choice in the
+dead-resolver script's first draft, used correctly here for contrast.
+
+Direct cache-hit evidence (not just TTL math): flushed cache, then ran
+the identical query twice in immediate succession.
+  Cold:  Query time: 31 msec
+  Warm:  Query time: 1 msec
+A 31x speedup on the same query seconds apart is direct proof of a
+live cache hit - complements the earlier TTL-decay method (which
+tests whether a *specific* answer is stale) with a latency-based test
+(which directly demonstrates the cache mechanism operating).
