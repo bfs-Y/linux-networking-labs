@@ -60,7 +60,7 @@ See `BACKLOG.md` for what's tracked but not yet built.
 ## Environment
 
 KVM/libvirt hypervisor (Ubuntu) hosting two VMs:
-- `training-vm` (Ubuntu 24.04, `192.168.122.227`) — primary lab VM
+- `ubuntulab` (Ubuntu 24.04, `192.168.122.226`) — primary lab VM
 - `centos9` (CentOS 9, `192.168.122.207`) — secondary VM for cross-host
   scenarios
 
