@@ -11,7 +11,7 @@ queried, commonly explains this?
 YOUR ANSWER:
 >
 REFERENCE:
-/etc/hosts -- check with: getent hosts <domain>
+/etc/hosts -- check with: getent ahosts <domain> (NOT plain "getent hosts" - confirmed unreliable for this check, see postmortem/02-getent-hosts-false-verification.md)
 nsswitch.conf's default resolution order checks hosts file entries
 before DNS.
 
@@ -27,7 +27,7 @@ restoring from it. A restore is only as good as what was backed up.
 
 SPEED ROUND — cover reference column, write the command aloud/on paper:
 
-Check what a hostname actually resolves to locally    -> getent hosts <domain>
+Check what a hostname actually resolves to locally    -> getent ahosts <domain>
 Verify a target string isn't already in /etc/hosts     -> grep -qE "[[:space:]]<domain>([[:space:]]|$)" /etc/hosts
 Find the most recent timestamped backup file            -> ls -t /etc/hosts.bak.* | head -n1
 
