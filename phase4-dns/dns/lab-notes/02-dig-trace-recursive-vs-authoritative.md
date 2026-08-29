@@ -63,3 +63,31 @@ or a network path is faulty. The mental model of "always 3 clean
 hops" is a simplification; real DNS infrastructure resolves in a
 variable number of hops depending on what the root/TLD servers
 already know.
+
+--- A vs AAAA: WHY SEPARATE RECORD TYPES ---
+A records return IPv4 addresses, AAAA records return IPv6 addresses.
+Confirmed live: `dig wikipedia.org A` -> 185.15.58.224, `dig
+wikipedia.org AAAA` -> 2a02:ec80:600:ed1a::1 - structurally different
+address families, not just "different looking" values.
+
+They're kept as separate query types (not merged into one record
+type returning both) because a client needs to know in advance which
+address family it can actually use. This host has broken/absent
+routable IPv6 (confirmed earlier this phase via dig +trace's repeated
+"network unreachable" against IPv6-addressed root servers) - if A and
+AAAA were merged, an IPv4-only client would have no clean way to know
+which returned address it could actually connect to without trying
+and failing. Separate types let a client explicitly request only the
+family it supports.
+
+--- rd AND ra FLAGS ---
+rd (Recursion Desired): set by the CLIENT on the query - "I want you
+to perform recursion on my behalf if you don't have the answer
+locally."
+ra (Recursion Available): set by the SERVER on the response - "I
+support/performed recursion for this query."
+Both appear in nearly every dig response seen this phase
+(`flags: qr rd ra`) because a typical stub-resolver setup always
+requests and receives recursive service - contrast with `+trace`
+mode, where dig deliberately does its OWN iterative walk instead of
+asking a server to recurse for it.
