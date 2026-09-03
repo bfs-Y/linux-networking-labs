@@ -97,4 +97,72 @@ is ready to catch the very first packets of a fast local connection.
 Not resolved tonight — a possible next step is adding a short mandatory
 settle delay AFTER confirming the process is running, or using a
 capture-ready signal more precise than PID/file existence.
+## Follow-up - second real bug found and fixed (work: 2026-08-31 to 09-02, documented: 2026-09-03)
+
+
+Returned to this script as the entry point into Phase 5 (Observability)
+
+work. Ran it fresh and hit a NEW failure this script's earlier fixes
+
+didn't cover: "tcpdump: /tmp/tcp-handshake.pcap: No such file or
+
+directory" - the capture never started at all.
+
+Root cause: the polling loop (added in the first fix) checks for the
+
+pcap file + a live PID for up to 20 x 0.2s = 4 seconds, but the loop
+
+has NO explicit failure path if it exhausts all 20 attempts without
+
+confirming the capture started. The script silently fell through to
+
+curl, kill, and the final tcpdump -r read - which is where the actual
+
+error surfaced, far downstream of the real cause. Contributing factor:
+
+`sudo tcpdump ... &` was backgrounded WHILE still needing a sudo
+
+password prompt, and typing the password consumed most/all of the
+
+4-second polling window before the capture process could actually
+
+start.
+
+Fix applied:
+
+1. Added `sudo -v` immediately before backgrounding tcpdump, so sudo
+
+   authentication happens up front and doesn't compete with the
+
+   timing-sensitive polling window.
+
+2. Added an explicit check immediately after the polling loop: if the
+
+   pcap file still doesn't exist or the PID isn't alive, print a clear
+
+   [FAIL] message and `exit 1` before ever calling curl - instead of
+
+   silently continuing into a guaranteed downstream failure.
+
+Re-ran after the fix: clean 12-packet capture, full handshake through
+
+graceful FIN close, "Capture confirmed running" printed before curl
+
+fired. Verified seq/ack math live: SYN seq 456721605 + 1 = SYN-ACK ack
+
+456721606, confirmed by hand against the real captured packet, not
+
+just trusted from the printed labels.
+
+Lesson generalized (same class as prior fixes in this file): a
+
+verification loop that can time out needs an explicit action on
+
+timeout, not just an implicit fall-through. "The loop finished" is not
+
+the same as "the loop succeeded" - the two need to be distinguished
+
+and handled differently, every time a script waits on an async
+
+process actually being ready.
 
