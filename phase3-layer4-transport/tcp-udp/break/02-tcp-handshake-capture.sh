@@ -15,6 +15,8 @@ echo "[SETUP] Target: example.com ($TARGET_IP)"
 echo ""
 echo "=== CAPTURING FULL TCP CONVERSATION ==="
 rm -f "$PCAP"
+echo "[SETUP] Authenticating sudo up front so it does not stall the capture wait..."
+sudo -v
 sudo tcpdump -i "$IFACE" -n "host $TARGET_IP and tcp port 80" -w "$PCAP" &
 TCPDUMP_PID=$!
 echo "Waiting for capture to actually start (verifying, not just sleeping)..."
@@ -25,6 +27,11 @@ for i in $(seq 1 20); do
     fi
     sleep 0.2
 done
+if ! [ -f "$PCAP" ] || ! kill -0 "$TCPDUMP_PID" 2>/dev/null; then
+    echo "[FAIL] Capture never started - aborting before generating traffic."
+    sudo kill "$TCPDUMP_PID" 2>/dev/null
+    exit 1
+fi
 curl -s -o /dev/null --resolve "example.com:80:$TARGET_IP" http://example.com
 sleep 1
 sudo kill $TCPDUMP_PID 2>/dev/null
