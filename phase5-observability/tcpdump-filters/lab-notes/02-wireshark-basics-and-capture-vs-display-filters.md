@@ -63,3 +63,17 @@ time (a real risk with tcpdump's capture-time-only filtering, unless
 you deliberately capture broad and post-filter with a saved pcap and
 tools like tshark's -Y flag, which mirrors this same distinction on
 the command line).
+
+--- FOLLOW TCP STREAM: RECONSTRUCTING A FULL CONVERSATION ---
+Right-click a packet in the capture -> Follow -> TCP Stream reassembles
+an entire TCP conversation into one continuous, readable view instead
+of many separate packet rows. Confirmed live: captured a real
+`curl http://example.com` request, followed the stream, and saw the
+full GET request and the complete HTTP response (headers + HTML body)
+reconstructed as plain text, with the two directions (client request
+vs server response) visually distinguished by color.
+This does automatically what would otherwise require manually
+correlating multiple packets by seq/ack numbers and payload offsets
+by hand (as done earlier this phase for a bare TCP handshake) -
+genuinely useful for reading application-layer content (HTTP, plain-
+text protocols) without reconstructing it packet-by-packet yourself.
