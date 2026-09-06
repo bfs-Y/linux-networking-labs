@@ -50,20 +50,11 @@ default Nmap service name is a port-number lookup table guess;
 `-sV` gives a real, evidence-based identification, but only for
 ports something is actually listening on.
 
---- REAL FINDING: FIREWALL ALLOWS A SERVICE THAT ISN'T RUNNING ---
-Port 9090 showed CLOSED, not filtered - meaning the firewall let the
-probe through fine, but nothing answered on the other side. Confirmed
-directly on centos9:
-  $ sudo systemctl status cockpit.socket
-    Loaded: loaded ... disabled
-    Active: inactive (dead)
-    Listen: [::]:9090 (Stream)
-firewalld's `cockpit` service rule is correctly configured to allow
-traffic to 9090 - but the actual cockpit.socket unit is disabled and
-never started. Two independent layers (firewall rule, service state)
-both need to be correct for a service to be reachable; this is the
-inverse of the earlier loadbalancer finding (there: service ran,
-firewall blocked it; here: firewall allows it, service never started).
+--- REAL FINDING: FIREWALL ALLOWS A SERVICE THAT ISNT RUNNING - SEE POSTMORTEM ---
+Port 9090 showed CLOSED, not filtered, despite firewalld explicitly
+allowing the cockpit service. Traced to cockpit.socket being
+disabled/inactive - full incident writeup in
+postmortem/01-cockpit-allowed-but-not-running.md.
 
 --- PRODUCTION RELEVANCE ---
 A scan result showing "closed" for a port you expect to be open is a
