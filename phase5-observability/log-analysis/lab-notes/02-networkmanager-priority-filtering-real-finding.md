@@ -31,20 +31,11 @@ warning-level-or-higher entries. This is what actually found the two
 real threads documented below - the info-level noise would have
 buried both if read unfiltered.
 
---- REAL FINDING 1: A GENUINE, PREVIOUSLY-UNNOTICED SECURITY GAP ---
-Recurring at nearly every single boot for over a year (file dated
-Aug 5 2025): "Permissions for /etc/netplan/01-network-manager-all.yaml
-are too open." Verified: file was -rw-r--r-- (644), readable by any
-local user. Per Netplan's own official security documentation,
-confirmed via web search against multiple independent sources
-(official docs + a real bug report showing this EXACT warning on this
-EXACT filename): netplan YAML files can contain credentials (VPN
-keys, WiFi passwords) and should be chmod 600 (root read/write only).
-Fixed: `sudo chmod 600 /etc/netplan/01-network-manager-all.yaml`.
-Verified fix: `sudo netplan generate` now runs with zero warning
-output, confirmed immediately, not just assumed. This is a genuine,
-actionable finding this exercise surfaced that had never been noticed
-before, despite recurring in the logs for over a year.
+--- REAL FINDING 1: A GENUINE SECURITY GAP - SEE POSTMORTEM ---
+Recurring at nearly every boot for over a year: netplan config file
+permissions too open (644, should be 600 per official docs). Found,
+researched, fixed, and verified in this session - full incident
+writeup in postmortem/01-netplan-permissions-too-open.md.
 
 --- REAL FINDING 2 (CORRECTLY TRIAGED AS NOT AN INCIDENT): OPENVPN NOISE ---
 Also recurring across many days: repeated `nm-openvpn` warnings/errors
