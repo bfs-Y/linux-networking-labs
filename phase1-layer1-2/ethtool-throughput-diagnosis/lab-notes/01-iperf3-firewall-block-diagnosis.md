@@ -15,7 +15,7 @@ What this proves: the application is listening on TCP port 5201.
 Keep this terminal open.
 
 ### 2. Break the system (centos9, separate terminal)
-    ./phase1-layer1-2/ethtool/break/01-remove-iperf3-firewall-rule.sh
+    ./phase1-layer1-2/ethtool-throughput-diagnosis/break/01-remove-iperf3-firewall-rule.sh
 Verify:
     sudo firewall-cmd --list-all
 Expect NOT to see "5201/tcp" under ports:.
@@ -51,7 +51,7 @@ Result pattern:
     Firewall    blocking  <- actual fault
 
 ### 5. Apply the fix (centos9)
-    ./phase1-layer1-2/ethtool/fix/01-restore-iperf3-firewall-rule.sh
+    ./phase1-layer1-2/ethtool-throughput-diagnosis/fix/01-restore-iperf3-firewall-rule.sh
 
 ### 6. Verify recovery (training-vm)
     iperf3 -c 192.168.122.207
