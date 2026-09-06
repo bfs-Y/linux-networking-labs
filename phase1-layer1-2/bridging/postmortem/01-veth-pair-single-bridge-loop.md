@@ -60,7 +60,7 @@ one veth end attached to the bridge, the other end moved into an isolated
 network namespace (`ip netns add`, `ip link set <if> netns <namespace>`).
 Verified with bidirectional ping (0% packet loss both directions) after
 rebuilding correctly. Full corrected sequence documented in
-`phase1-layer1-2/bridging/lab-notes/README.md`.
+`phase1-layer1-2/bridging/lab-notes/01-bridge-veth-namespace-build.md`.
 
 ## Automated or Permanent Version of the Fix
 
