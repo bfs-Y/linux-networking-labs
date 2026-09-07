@@ -5,7 +5,7 @@ Understand ARP resolution, neighbor table states, and how to tell a
 self-healing cache state (STALE) apart from a genuine, non-recovering
 fault (PERMANENT with a wrong MAC).
 
-## Baseline mechanism (see postmortem/README.md, 2026-07-10)
+## Baseline mechanism (see postmortem/01-arp-resolution-capture.md, 2026-07-10)
 tcpdump capture showed strict ordering: ARP Request (broadcast) ->
 ARP Reply (unicast) -> ICMP Echo. The kernel holds outbound IP
 traffic until Layer 2 resolution completes. ARP Requests broadcast
