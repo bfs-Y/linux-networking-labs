@@ -59,7 +59,7 @@ Check the delta on ubuntulab immediately before and after the flood
 completes, same before/after method as above.
 
 ## Fix
-None required - see fix/README.md. The flood is time-bounded
+None required - see fix/00-no-fix-needed-self-resolving.md. The flood is time-bounded
 (iperf3 -t 10) and self-resolving; no config or persistent state is
 changed by running it.
 
