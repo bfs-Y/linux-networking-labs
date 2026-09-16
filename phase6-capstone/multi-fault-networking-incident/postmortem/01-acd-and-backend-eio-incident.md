@@ -108,3 +108,39 @@ of health during initial triage, and correctly revised only after a
 lesson from earlier in this repo: "the port is listening" and "the
 service is loudly connected" are not proof of a healthy dependency
 chain - only an actual successful request/response cycle is.
+
+## Follow-up: confirmed as a RECURRING, still-unresolved issue (2026-09-15)
+Cross-checked against phase1-layer1-2/dhcp/postmortem/03-acd-conflict-
+lease-refused.md (2026-08-13, ~5 weeks earlier). This is the SAME
+failure recurring, not a coincidentally similar one - confirmed by:
+- Identical address (192.168.122.226) and identical log signature
+  ("dhcp4 (enp1s0): state changed new lease, address=192.168.122.226,
+  acd conflict") in both incidents.
+- Identical fix mechanism required both times: `nmcli device reapply`
+  insufficient, `nmcli device disconnect` + `connect` (full reset)
+  required to force a clean DHCP renegotiation.
+- Identical negative result both times: no live conflicting device
+  found via ARP testing (arping/tcpdump) at investigation time.
+- Root cause of the underlying ACD trigger remains unproven in BOTH
+  incidents.
+
+This elevates the finding: not "an ACD conflict happened once,"
+but "this host has a recurring, still-unexplained ACD conflict on
+its own assigned address, at least twice over five weeks, with the
+same investigation dead-ending at the same point both times."
+
+The August postmortem's own suggested next step was never followed
+up: "check journalctl at the exact moment of conflict (not after the
+fact)... this session's bonding work earlier created and deleted
+several interfaces that may be worth reviewing as a possible source
+of a stale ARP/lease artifact." That lead is still open and still
+unchecked as of this second occurrence.
+
+Genuine open item, now with more weight than a single-incident
+unknown: if this recurs a third time, the correct move is to catch
+it live - watch `journalctl -u NetworkManager -f` continuously and
+capture ARP traffic (`tcpdump -n -e arp`) on ALL hosts on this subnet
+simultaneously (ubuntulab, centos9, hypervisor) at the moment the
+conflict is logged, rather than investigating after the fact once
+the transient state has already cleared - which is what has caused
+both prior investigations to reach a dead end.
