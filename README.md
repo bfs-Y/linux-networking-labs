@@ -6,15 +6,15 @@ captures as evidence. Every finding is backed by command output, not
 assumption.
 
 Companion repos:
-- `linux-fundamentals-labs` -- general Linux administration
-- `linux-security-labs` -- attack/defense/detection content (ARP poisoning,
+- [`linux-fundamentals-labs`](https://github.com/bfs-Y/linux-fundamentals-labs) -- general Linux administration
+- [`linux-security-labs`](https://github.com/bfs-Y/linux-security-labs) -- attack/defense/detection content (ARP poisoning,
   firewall exploitation, TLS spoofing, and other adversarial scenarios)
 
 This repo is scoped to mechanism only -- no adversary involved (except
 Phase 6's CTF-style exercise, which is explicitly, self-contained
 offense/defense practice against a target this repo also owns). If a
 lab assumes an external attacker or adversarial scenario outside that
-one exercise, it belongs in `linux-security-labs`, not here.
+one exercise, it belongs in [`linux-security-labs`](https://github.com/bfs-Y/linux-security-labs), not here.
 
 ## Structure
 
@@ -32,7 +32,7 @@ design -- forcing a single layer number onto them would misrepresent what
 they cover.
 
 Defensive/hardening content that assumes an adversary lives in the
-companion repo, `linux-security-labs`, not here -- see the scope note
+companion repo, [`linux-security-labs`](https://github.com/bfs-Y/linux-security-labs), not here -- see the scope note
 above. (Note: `phase0-infra/hardening/ps1-hardening.md` is PS1 prompt
 cosmetics, not adversarial/security content, despite the folder name --
 it correctly stays here, not in the companion repo.)
