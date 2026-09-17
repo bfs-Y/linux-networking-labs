@@ -70,8 +70,8 @@ All six phases are complete.
   HTB/CTF-style reverse-proxy exposure exercise (recon through
   remediation, verified from the attacker's own vantage point)
 
-See `BACKLOG.md` for anything tracked but not yet built beyond the six
-core phases.
+See `BACKLOG-ARCHIVE.md` for historical planning/debugging notes from
+earlier in this repo's development - archived, not an active list.
 
 ## Representative postmortems
 

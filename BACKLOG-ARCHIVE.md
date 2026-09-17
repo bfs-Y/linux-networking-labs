@@ -1,3 +1,18 @@
+# ARCHIVED (2026-09-15)
+
+This file is a historical record, not an active backlog. Nearly every
+item here has since been built (ARP, VLAN, bonding, sys-class-net,
+ethtool-throughput-diagnosis, DHCP as its own topic, all of Phase 5
+and 6). Kept as-is for its real value as a debugging record (the
+autoinstall/Subiquity troubleshooting saga in particular).
+
+Two items below were never explicitly closed and may still be genuinely
+open if revisited: the isolated network (virbr1) purpose, and snapshot
+chain pruning. Everything else in this file should be treated as
+resolved history, not a live task list.
+
+---
+
 # Topics not yet covered — add after DNS is complete
 - Routing (static routes, multiple interfaces, gateway failure)
 - DHCP (lease process, relay, rogue DHCP detection)
