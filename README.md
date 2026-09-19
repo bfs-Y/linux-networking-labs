@@ -51,9 +51,9 @@ All six phases are complete.
   behavior), container namespaces, ethtool/throughput diagnosis,
   MTU mismatch, `/sys/class/net` kernel counters, VLAN tagging
 - `phase2-layer3/` -- IP addressing/CIDR, static routing and metrics,
-  ICMP path diagnostics (found a real internet routing loop), NAT,
-  firewall rule precedence, and an early multi-fault routing +
-  firewall troubleshooting exercise
+  ICMP path diagnostics (found a real internet routing loop), advanced
+  mtr/multihop diagnostics, NAT, firewall rule precedence, and an early
+  multi-fault routing + firewall troubleshooting exercise
 - `phase3-layer4-transport/` -- TCP/UDP connection states (handshake,
   TIME_WAIT/CLOSE_WAIT, backlog), load balancing (a real bind-and-firewall
   defect pair)
