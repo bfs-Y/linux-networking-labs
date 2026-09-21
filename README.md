@@ -24,6 +24,15 @@ where a topic needs a direct outcome check distinct from the fix itself.
 Phase 6 capstones use only `lab-notes/postmortem/drill/` -- these are
 live, cold-diagnosis exercises rather than reusable break scripts.
 
+Phase 5 (Observability) topics intentionally omit `break/fix/` entirely.
+These labs are built around observing and interpreting a real system
+(tcpdump/Wireshark captures, nmap scans, journalctl log analysis), not
+injecting and remediating a fault. Several findings in this phase are
+genuine, pre-existing discoveries (a real misconfigured file permission,
+a real allowed-but-inactive service) -- fabricating a break script to
+precede them would be less authentic than the actual investigative work
+that surfaced them.
+
 Folder names include an explicit OSI layer number through Phase 3, where
 each phase maps cleanly to one layer. Phase 4 onward drop the layer
 number deliberately: DNS is application-layer but commonly taught as its
