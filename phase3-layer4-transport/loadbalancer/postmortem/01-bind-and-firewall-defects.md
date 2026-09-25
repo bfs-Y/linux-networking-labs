@@ -24,8 +24,7 @@ INPUT rules don't block traffic that never leaves the box.
 
 Root cause 3 - the pre-existing verify script cannot detect either
 defect above:
-fix/08-loadbalancer-verify.sh (moved to verify/01-loadbalancer-verify.sh
-this session) only checks ss, systemctl status, and curl - all run
+verify/01-loadbalancer-verify.sh (formerly fix/08-loadbalancer-verify.sh, moved this session) only checks ss, systemctl status, and curl - all run
 against localhost:8090. Neither the 0.0.0.0 bind issue nor the missing
 UFW rule would ever surface from running this script as-is. A "verify"
 script that cannot detect the two real defects found this session is
@@ -97,7 +96,7 @@ flag and UFW rule are currently manual, one-off commands applied to
 this session's running processes - break/08-loadbalancer-setup.sh
 itself still contains the original 0.0.0.0 bind and still ships no
 UFW rule. The script needs to be edited directly (same treatment
-given to break/02-tcp-handshake-capture.sh in tcp-udp/) so future runs
+given to ../../tcp-udp/break/02-tcp-handshake-capture.sh) so future runs
 don't reintroduce either defect. verify/01-loadbalancer-verify.sh also
 needs a cross-host check added (e.g. accept a remote host arg and run
 nc -zv from there, or document that it must be run from a second host

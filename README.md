@@ -53,7 +53,7 @@ All six phases are complete.
 - `phase0-infra/` -- KVM provisioning, topology, automated baseline capture
   (`capture-baseline.sh`: SSH-triggered VM-to-VM traffic, setcap-based
   unprivileged tcpdump, `set -e`-safe), PS1 operational hardening (the
-  incident that started it: `postmortem/01-wrong-host-ping-hypervisor-vs-vm.md`)
+  incident that started it: `phase0-infra/postmortem/01-wrong-host-ping-hypervisor-vs-vm.md`)
 - `phase1-layer1-2/` -- interfaces/DHCP, ARP resolution (real capture with
   microsecond-precision causal ordering), bonding (active-backup failover),
   bridging (a real Layer 2 loop incident plus veth/namespace teardown
